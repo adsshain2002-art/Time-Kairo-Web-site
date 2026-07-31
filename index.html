@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIME KAIRO | Wear Beyond Time | Official Streetwear Store</title>
+  <meta name="description" content="Discover Time Kairo - Premium Luxury Streetwear Clothing Brand in Sri Lanka. Shop heavy cotton oversized tees, cyber hoodies, tactical cargo pants and techwear jackets. Phone: 0741565677, Address: Galedanda, Gonawala.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0a0a0c',
+            brandCard: 'rgba(22, 22, 28, 0.7)',
+            brandCyan: '#00f2fe',
+            brandGold: '#e6c875',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-brandDark text-gray-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-black">
+
+  <!-- TOP TICKER ANNOUNCEMENT BAR -->
+  <div class="bg-gradient-to-r from-gray-950 via-cyan-950 to-gray-950 border-b border-cyan-500/20 text-cyan-300 text-xs font-bold py-2 overflow-hidden select-none">
+    <div class="ticker-wrap max-w-7xl mx-auto px-4 flex items-center justify-between">
+      <div class="ticker-move flex items-center gap-12 uppercase tracking-widest text-center">
+        <span>✨ TIME KAIRO — <span id="ticker-slogan">WEAR BEYOND TIME</span> ✨</span>
+        <span>•</span>
+        <span>🔥 ISLANDWIDE DELIVERY AVAILABLE</span>
+        <span>•</span>
+        <span>📞 DIRECT WHATSAPP ORDERS: <span id="ticker-phone">0741565677</span></span>
+        <span>•</span>
+        <span>📍 VISIT US AT <span id="ticker-address">GALEDANDA, GONAWALA</span></span>
+        <span>•</span>
+        <span>✨ TIME KAIRO — WEAR BEYOND TIME ✨</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 glass-nav transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Official Logo Container -->
+        <a href="#" onclick="switchPage('home'); return false;" class="group flex items-center">
+          <div class="px-4 py-2 rounded-2xl bg-black/90 border border-gray-800 hover:border-cyan-500/50 transition duration-300 flex items-center justify-center shadow-lg shadow-cyan-500/10">
+            <img src="images/logo.jpg" alt="Time Kairo Official Logo" class="h-8 sm:h-9 w-auto object-contain">
+          </div>
+        </a>
+
+        <!-- Desktop Links -->
+        <nav class="hidden md:flex items-center gap-8 font-medium text-sm">
+          <button onclick="switchPage('home')" data-page="home" class="nav-link text-cyan-400 border-b-2 border-cyan-400 py-1 transition">Home</button>
+          <button onclick="switchPage('shop')" data-page="shop" class="nav-link text-gray-300 hover:text-cyan-300 py-1 transition">Shop Catalog</button>
+          <button onclick="switchPage('about')" data-page="about" class="nav-link text-gray-300 hover:text-cyan-300 py-1 transition">About Us</button>
+          <button onclick="switchPage('contact')" data-page="contact" class="nav-link text-gray-300 hover:text-cyan-300 py-1 transition">Contact</button>
+          
+          <!-- Owner Admin Access Portal -->
+          <button onclick="switchPage('admin')" data-page="admin" class="nav-link text-amber-400 hover:text-amber-300 border border-amber-500/40 bg-amber-500/10 px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-500/10">
+            <i class="fa-solid fa-lock text-xs"></i> Owner Admin Portal
+          </button>
+        </nav>
+
+        <!-- Header Action Icons -->
+        <div class="flex items-center gap-4">
+          <!-- WhatsApp Quick Contact -->
+          <a id="nav-wa-link" href="https://wa.me/94741565677" target="_blank" class="hidden sm:flex items-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold transition">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span id="nav-wa-phone">0741565677</span>
+          </a>
+
+          <!-- Cart Drawer Button -->
+          <button onclick="openCartDrawer()" class="relative p-2.5 rounded-full bg-gray-900 border border-gray-800 hover:border-cyan-500 text-gray-200 hover:text-cyan-400 transition" title="View Cart">
+            <i class="fa-solid fa-bag-shopping text-lg"></i>
+            <span id="cart-count-badge" class="absolute -top-1.5 -right-1.5 bg-cyan-400 text-black text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg" style="display: none;">0</span>
+          </button>
+
+          <!-- Mobile Hamburger Toggle -->
+          <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 hover:text-white">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-800 bg-brandDark/95 backdrop-blur-xl px-4 py-4 space-y-3">
+      <button onclick="switchPage('home')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">Home</button>
+      <button onclick="switchPage('shop')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">Shop Catalog</button>
+      <button onclick="switchPage('about')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">About Us</button>
+      <button onclick="switchPage('contact')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">Contact Us</button>
+      <button onclick="switchPage('admin')" class="block w-full text-left py-2 px-3 rounded-lg text-amber-400 bg-amber-500/10 border border-amber-500/30 text-sm font-bold flex items-center justify-between">
+        <span>Owner Admin Portal</span>
+        <i class="fa-solid fa-lock text-xs"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-grow">
+
+    <!-- ================= PAGE 1: HOME ================= -->
+    <section id="page-home" class="page-section active">
+      
+      <!-- HERO BANNER SECTION WITH RICH STREETWEAR PHOTO BACKGROUND -->
+      <div class="relative min-h-[90vh] flex items-center justify-center border-b border-gray-800/80 overflow-hidden py-16">
+        
+        <!-- High Fashion Background Image with Vignette Overlay -->
+        <div class="absolute inset-0 z-0">
+          <img src="images/hero.jpg" alt="Streetwear Fashion Models" class="w-full h-full object-cover object-center filter contrast-125 brightness-90">
+          <!-- Gradient Vignette & Dark Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-brandDark via-brandDark/80 to-brandDark/60"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-brandDark via-black/50 to-brandDark"></div>
+          <div class="absolute inset-0 cyber-grid opacity-40"></div>
+        </div>
+
+        <!-- Glowing Cyan Background Halos -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-cyan-500/15 rounded-full blur-3xl pointer-events-none z-0"></div>
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none z-0"></div>
+
+        <div class="relative max-w-5xl mx-auto px-4 text-center z-10">
+          
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-cyan-500/40 text-cyan-300 text-xs font-extrabold uppercase tracking-widest mb-8 animate-pulse-glow shadow-lg shadow-cyan-500/20">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            OFFICIAL LUXURY STREETWEAR STORE
+          </div>
+          
+          <!-- BREATHTAKING EMBLEM CONTAINER FOR LOGO -->
+          <div class="block max-w-3xl mx-auto mb-8">
+            <div class="logo-emblem-box rounded-3xl p-6 sm:p-12 shadow-2xl animate-float">
+              <img src="images/logo.jpg" alt="Time Kairo Official Logo" class="w-full max-w-xl mx-auto object-contain filter drop-shadow-[0_0_25px_rgba(0,242,254,0.4)]">
+            </div>
+          </div>
+
+          <p class="max-w-2xl mx-auto text-gray-200 text-base sm:text-lg mb-10 font-medium leading-relaxed drop-shadow-md">
+            Elevate your personal expression with high-concept streetwear, oversized silhouettes, and architectural techwear engineered for timeless impact.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button onclick="switchPage('shop')" class="w-full sm:w-auto px-8 py-4 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-full uppercase tracking-wider text-sm transition transform hover:scale-105 shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-3">
+              <i class="fa-solid fa-shirt"></i> Explore Shop Catalog
+            </button>
+            <a id="hero-wa-btn" href="https://wa.me/94741565677?text=Hi%20Time%20Kairo!%20I%20want%20to%20inquire%20about%20your%20latest%20clothing%20drops." target="_blank" class="w-full sm:w-auto px-8 py-4 glass-panel border border-emerald-500/50 hover:bg-emerald-500/10 text-emerald-300 font-extrabold rounded-full uppercase tracking-wider text-sm transition transform hover:scale-105 flex items-center justify-center gap-3">
+              <i class="fa-brands fa-whatsapp text-lg"></i> Direct WhatsApp Order (<span id="hero-wa-phone">0741565677</span>)
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURED CATEGORIES SHOWCASE -->
+      <div class="max-w-7xl mx-auto px-4 py-20">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+          <div>
+            <span class="text-xs font-extrabold uppercase tracking-widest text-cyan-400">Curated Lines</span>
+            <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-white mt-1">FEATURED CATEGORIES</h2>
+          </div>
+          <button onclick="switchPage('shop')" class="mt-4 md:mt-0 text-cyan-400 hover:text-white font-bold text-sm uppercase tracking-wider flex items-center gap-2 transition">
+            View All Products <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- Category 1: Oversized Tees -->
+          <div onclick="switchPage('shop')" class="cursor-pointer group relative glass-panel rounded-2xl overflow-hidden h-96 border-glow-hover">
+            <img src="images/tee.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-end p-6">
+              <span class="text-xs text-cyan-400 font-extrabold uppercase tracking-widest mb-1">Essential</span>
+              <h3 class="font-heading text-2xl font-bold text-white group-hover:text-cyan-300 transition">Oversized Tees</h3>
+              <p class="text-xs text-gray-300 mt-1">Heavyweight cotton 280GSM</p>
+            </div>
+          </div>
+
+          <!-- Category 2: Cyber Hoodies -->
+          <div onclick="switchPage('shop')" class="cursor-pointer group relative glass-panel rounded-2xl overflow-hidden h-96 border-glow-hover">
+            <img src="images/hoodie.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-end p-6">
+              <span class="text-xs text-amber-400 font-extrabold uppercase tracking-widest mb-1">Cold Season</span>
+              <h3 class="font-heading text-2xl font-bold text-white group-hover:text-cyan-300 transition">Cyber Hoodies</h3>
+              <p class="text-xs text-gray-300 mt-1">450GSM French Terry fleece</p>
+            </div>
+          </div>
+
+          <!-- Category 3: Luxury Jackets -->
+          <div onclick="switchPage('shop')" class="cursor-pointer group relative glass-panel rounded-2xl overflow-hidden h-96 border-glow-hover">
+            <img src="images/jacket.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-end p-6">
+              <span class="text-xs text-cyan-400 font-extrabold uppercase tracking-widest mb-1">Outerwear</span>
+              <h3 class="font-heading text-2xl font-bold text-white group-hover:text-cyan-300 transition">Luxury Jackets</h3>
+              <p class="text-xs text-gray-300 mt-1">Architectural hardware trims</p>
+            </div>
+          </div>
+
+          <!-- Category 4: Cargo Pants -->
+          <div onclick="switchPage('shop')" class="cursor-pointer group relative glass-panel rounded-2xl overflow-hidden h-96 border-glow-hover">
+            <img src="images/cargo.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-end p-6">
+              <span class="text-xs text-emerald-400 font-extrabold uppercase tracking-widest mb-1">Bottoms</span>
+              <h3 class="font-heading text-2xl font-bold text-white group-hover:text-cyan-300 transition">Tactical Cargos</h3>
+              <p class="text-xs text-gray-300 mt-1">6-pocket modular utility</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TRENDING PRODUCTS GRID -->
+      <div class="bg-gray-950/60 border-y border-gray-800/80 py-20">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="text-center max-w-2xl mx-auto mb-14">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-cyan-400">Exclusive Drop</span>
+            <h2 class="font-heading text-3xl sm:text-5xl font-extrabold text-white mt-1">HOTTEST ARRIVALS</h2>
+            <p class="text-gray-400 text-sm mt-3">Handcrafted with precision. Available for immediate WhatsApp order or bag addition.</p>
+          </div>
+
+          <div id="home-featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Dynamic JS items -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= PAGE 2: SHOP CATALOG ================= -->
+    <section id="page-shop" class="page-section">
+      <div class="max-w-7xl mx-auto px-4 py-12">
+        
+        <!-- Header & Search -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div>
+            <h1 class="font-heading text-4xl sm:text-5xl font-extrabold text-white uppercase">SHOP CATALOG</h1>
+            <p class="text-gray-400 text-sm mt-1">Explore our latest drops and timeless streetwear pieces.</p>
+          </div>
+
+          <!-- Search & Filter Controls -->
+          <div class="flex flex-col sm:flex-row items-center gap-3">
+            <div class="relative w-full sm:w-72">
+              <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+              <input type="text" id="shop-search-input" placeholder="Search clothes..." class="w-full bg-gray-900 border border-gray-800 focus:border-cyan-400 rounded-full pl-11 pr-4 py-2.5 text-sm text-white focus:outline-none transition">
+            </div>
+            
+            <select id="shop-sort-select" class="w-full sm:w-auto bg-gray-900 border border-gray-800 focus:border-cyan-400 rounded-full px-4 py-2.5 text-sm text-white focus:outline-none transition font-semibold">
+              <option value="featured">Featured Drops</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="newest">Newest First</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+          <button data-category="all" class="cat-btn active px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition bg-cyan-400 text-black">All Items</button>
+          <button data-category="tshirts" class="cat-btn px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition bg-gray-900 text-gray-300 hover:text-white hover:bg-gray-800">T-Shirts</button>
+          <button data-category="hoodies" class="cat-btn px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition bg-gray-900 text-gray-300 hover:text-white hover:bg-gray-800">Hoodies</button>
+          <button data-category="jackets" class="cat-btn px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition bg-gray-900 text-gray-300 hover:text-white hover:bg-gray-800">Jackets</button>
+          <button data-category="pants" class="cat-btn px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition bg-gray-900 text-gray-300 hover:text-white hover:bg-gray-800">Pants & Cargos</button>
+        </div>
+
+        <!-- Products Grid Container -->
+        <div id="shop-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <!-- Dynamically populated by js/app.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= PAGE 3: ABOUT US ================= -->
+    <section id="page-about" class="page-section">
+      <div class="max-w-5xl mx-auto px-4 py-16">
+        
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="text-xs font-extrabold uppercase tracking-widest text-cyan-400">Our Ethos</span>
+          <h1 class="font-heading text-4xl sm:text-6xl font-extrabold text-white uppercase mt-1">ABOUT TIME KAIRO</h1>
+          <p id="about-motto" class="font-heading text-xl text-cyan-300 font-bold uppercase tracking-widest mt-2">"WEAR BEYOND TIME"</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+          <div class="space-y-6 text-gray-300 text-sm leading-relaxed">
+            <h2 class="font-heading text-2xl font-bold text-white">THE PHILOSOPHY</h2>
+            <div id="about-philosophy-text" class="space-y-4">
+              <p>Time Kairo was created with a bold vision: to redefine contemporary Sri Lankan streetwear by merging architectural cuts, high-density fabrics, and futuristic aesthetic motifs.</p>
+              <p>Our motto — <strong class="text-cyan-300">"Wear Beyond Time"</strong> — signifies garments engineered to transcend temporary trends. Every hoodie, oversized t-shirt, and tactical cargo is crafted with obsessive attention to weight, durability, and fit.</p>
+            </div>
+            <div class="pt-4 flex items-center gap-6 border-t border-gray-800">
+              <div>
+                <div id="stat1-val" class="font-heading text-2xl font-black text-white">100%</div>
+                <div id="stat1-lbl" class="text-xs text-gray-400">Premium Quality</div>
+              </div>
+              <div class="w-px h-10 bg-gray-800"></div>
+              <div>
+                <div id="stat2-val" class="font-heading text-2xl font-black text-cyan-400">280+ GSM</div>
+                <div id="stat2-lbl" class="text-xs text-gray-400">Heavyweight Fabric</div>
+              </div>
+              <div class="w-px h-10 bg-gray-800"></div>
+              <div>
+                <div id="stat3-val" class="font-heading text-2xl font-black text-amber-400">Islandwide</div>
+                <div id="stat3-lbl" class="text-xs text-gray-400">Fast Shipping</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative rounded-3xl overflow-hidden glass-panel border border-cyan-500/30 p-2">
+            <img id="about-img" src="images/hero.jpg" class="w-full h-96 object-cover rounded-2xl">
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= PAGE 4: CONTACT US ================= -->
+    <section id="page-contact" class="page-section">
+      <div class="max-w-6xl mx-auto px-4 py-16">
+        
+        <div class="text-center max-w-3xl mx-auto mb-14">
+          <span class="text-xs font-extrabold uppercase tracking-widest text-cyan-400">Get In Touch</span>
+          <h1 class="font-heading text-4xl sm:text-5xl font-extrabold text-white uppercase mt-1">CONTACT TIME KAIRO</h1>
+          <p class="text-gray-400 text-sm mt-2">Have a question regarding sizes, orders, or custom drops? We're always available.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          
+          <!-- Contact Card 1: Phone & WhatsApp -->
+          <a id="contact-wa-card" href="https://wa.me/94741565677" target="_blank" class="glass-panel p-8 rounded-3xl border-glow-hover text-center block">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-3xl mx-auto mb-4">
+              <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <h3 class="font-heading text-lg font-bold text-white">Phone & WhatsApp</h3>
+            <p id="contact-phone-val" class="text-emerald-400 font-extrabold text-lg mt-2">0741565677</p>
+            <p class="text-xs text-gray-400 mt-1">Tap to start WhatsApp chat</p>
+          </a>
+
+          <!-- Contact Card 2: Location -->
+          <div class="glass-panel p-8 rounded-3xl border-glow-hover text-center">
+            <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center text-3xl mx-auto mb-4">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <h3 class="font-heading text-lg font-bold text-white">Physical Address</h3>
+            <p id="contact-address-val" class="text-cyan-300 font-extrabold text-lg mt-2">Galedanda, Gonawala</p>
+            <p class="text-xs text-gray-400 mt-1">Sri Lanka</p>
+          </div>
+
+          <!-- Contact Card 3: Email -->
+          <a id="contact-email-card" href="mailto:timekairo8@gmail.com" class="glass-panel p-8 rounded-3xl border-glow-hover text-center block">
+            <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-3xl mx-auto mb-4">
+              <i class="fa-solid fa-envelope"></i>
+            </div>
+            <h3 class="font-heading text-lg font-bold text-white">Email Address</h3>
+            <p id="contact-email-val" class="text-amber-300 font-extrabold text-[15px] mt-2 truncate">timekairo8@gmail.com</p>
+            <p class="text-xs text-gray-400 mt-1">Tap to send email</p>
+          </a>
+
+        </div>
+
+        <!-- Social Media Cards Grid -->
+        <div class="mb-16">
+          <h2 class="font-heading text-2xl font-bold text-white text-center mb-8 uppercase tracking-wider">CONNECT ON SOCIAL MEDIA</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            
+            <a id="social-wa-link" href="https://wa.me/94741565677" target="_blank" class="p-5 glass-panel rounded-2xl border border-gray-800 hover:border-emerald-500 text-center transition group">
+              <i class="fa-brands fa-whatsapp text-3xl text-emerald-400 group-hover:scale-125 transition duration-300 mb-2"></i>
+              <div class="font-bold text-white text-sm">WhatsApp</div>
+              <div class="text-[10px] text-gray-400 social-handle">0741565677</div>
+            </a>
+
+            <a id="social-tiktok-link" href="https://www.tiktok.com/@timekairo" target="_blank" class="p-5 glass-panel rounded-2xl border border-gray-800 hover:border-pink-500 text-center transition group">
+              <i class="fa-brands fa-tiktok text-3xl text-pink-400 group-hover:scale-125 transition duration-300 mb-2"></i>
+              <div class="font-bold text-white text-sm">TikTok</div>
+              <div class="text-[10px] text-gray-400 social-handle">@timekairo</div>
+            </a>
+
+            <a id="social-ig-link" href="https://www.instagram.com/timekairo" target="_blank" class="p-5 glass-panel rounded-2xl border border-gray-800 hover:border-purple-500 text-center transition group">
+              <i class="fa-brands fa-instagram text-3xl text-purple-400 group-hover:scale-125 transition duration-300 mb-2"></i>
+              <div class="font-bold text-white text-sm">Instagram</div>
+              <div class="text-[10px] text-gray-400 social-handle">@timekairo</div>
+            </a>
+
+            <a id="social-fb-link" href="https://www.facebook.com/timekairo" target="_blank" class="p-5 glass-panel rounded-2xl border border-gray-800 hover:border-blue-500 text-center transition group">
+              <i class="fa-brands fa-facebook text-3xl text-blue-400 group-hover:scale-125 transition duration-300 mb-2"></i>
+              <div class="font-bold text-white text-sm">Facebook</div>
+              <div class="text-[10px] text-gray-400 social-handle">Time Kairo Official</div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Contact Message Form -->
+        <div class="max-w-2xl mx-auto glass-panel p-8 sm:p-10 rounded-3xl border border-gray-800">
+          <h3 class="font-heading text-2xl font-bold text-white mb-6 text-center">SEND A DIRECT INQUIRY</h3>
+          <form onsubmit="sendContactWhatsApp(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Your Name</label>
+              <input type="text" id="contact-name" required placeholder="Enter your full name" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Your Message</label>
+              <textarea id="contact-msg" rows="4" required placeholder="Ask about product sizes, custom orders, or delivery..." class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400"></textarea>
+            </div>
+            <button type="submit" class="w-full py-4 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-xl uppercase tracking-wider text-sm transition flex items-center justify-center gap-2">
+              <i class="fa-brands fa-whatsapp text-lg"></i> Send via WhatsApp
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= PAGE 5: OWNER ADMIN PORTAL (PRIVATE FOR OWNER ONLY) ================= -->
+    <section id="page-admin" class="page-section">
+      <div class="max-w-5xl mx-auto px-4 py-16">
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
+              <i class="fa-solid fa-lock"></i> Private Owner Panel
+            </div>
+            <h1 class="font-heading text-3xl sm:text-4xl font-extrabold text-white uppercase">OWNER ADMIN DASHBOARD</h1>
+            <p class="text-gray-400 text-xs">Manage clothing catalog and private Time Kairo Android App resources.</p>
+          </div>
+
+          <button onclick="resetCatalogToDefault()" class="px-4 py-2 bg-red-500/20 border border-red-500/40 text-red-300 hover:bg-red-500 hover:text-white rounded-xl text-xs font-bold uppercase tracking-wider transition">
+            <i class="fa-solid fa-rotate-left"></i> Reset To Default Catalog
+          </button>
+        </div>
+
+        <!-- DEDICATED OWNER-ONLY TIME KAIRO ANDROID APP CENTER -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-emerald-500/40 mb-12 bg-gradient-to-r from-emerald-950/30 via-gray-900 to-cyan-950/30 glow-box-cyan">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-3xl flex-shrink-0">
+                <i class="fa-brands fa-android"></i>
+              </div>
+              <div>
+                <div class="inline-flex items-center gap-1.5 text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full uppercase mb-1">
+                  <i class="fa-solid fa-key"></i> Private Owner Link
+                </div>
+                <h3 class="font-heading text-2xl font-bold text-white">Time Kairo Android App Control Center</h3>
+                <p class="text-xs text-gray-300 mt-1">This app link is only visible inside your Owner Admin Portal. Regular visitors cannot access it.</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 w-full md:w-auto">
+              <a id="admin-apk-btn" href="https://wa.me/94741565677?text=Hi%20Time%20Kairo!%20Here%20is%20the%20Owner%20Android%20App%20Download%20Link." target="_blank" class="w-full sm:w-auto px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-xl uppercase tracking-wider text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                <i class="fa-solid fa-download"></i> Owner App APK Link
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT BRAND, CONTACT & ABOUT US DETAILS FORM -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/30 mb-12 bg-gray-900/60">
+          <h2 class="font-heading text-xl font-bold text-white mb-2 flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-cyan-400"></i> Edit Brand, Contact & About Us Details
+          </h2>
+          <p class="text-xs text-gray-400 mb-6">Update contact info, address, slogan, philosophy story, About photo, social links, and app link across the entire website.</p>
+
+          <form id="admin-brand-form" onsubmit="handleSaveBrandInfo(event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Display Phone / WhatsApp Number</label>
+              <input type="text" id="admin-brand-phone" required placeholder="0741565677" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">WhatsApp International Number (for wa.me links)</label>
+              <input type="text" id="admin-brand-wa" placeholder="94741565677" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Physical Address</label>
+              <input type="text" id="admin-brand-address" required placeholder="Galedanda, Gonawala, Sri Lanka" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Contact Email Address</label>
+              <input type="email" id="admin-brand-email" required placeholder="timekairo8@gmail.com" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Brand Slogan / Motto</label>
+              <input type="text" id="admin-brand-slogan" required placeholder="WEAR BEYOND TIME" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Owner Android App Download APK URL</label>
+              <input type="text" id="admin-brand-apk" placeholder="https://wa.me/..." class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">About Us Philosophy Story</label>
+              <textarea id="admin-brand-about" rows="4" placeholder="Enter About Us story text..." class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">About Us Photo URL (Optional)</label>
+              <input type="text" id="admin-brand-about-img-url" placeholder="https://... or images/hero.jpg" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Or Upload About Us Photo File directly</label>
+              <input type="file" id="admin-brand-about-img-file" accept="image/*" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2 text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">TikTok Page URL</label>
+              <input type="text" id="admin-brand-tiktok" placeholder="https://www.tiktok.com/@timekairo" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Instagram Page URL</label>
+              <input type="text" id="admin-brand-ig" placeholder="https://www.instagram.com/timekairo" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Facebook Page URL</label>
+              <input type="text" id="admin-brand-fb" placeholder="https://www.facebook.com/timekairo" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div class="md:col-span-2 pt-2">
+              <button type="submit" class="w-full py-4 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-xl uppercase tracking-wider text-sm transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-floppy-disk text-lg"></i> Save & Apply Brand Settings
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Add New Product Form -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-gray-800 mb-12">
+          <h2 class="font-heading text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-circle-plus text-cyan-400"></i> Add New Clothing Product
+          </h2>
+          
+          <form id="admin-add-form" onsubmit="handleAddProduct(event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Product Title</label>
+              <input type="text" id="admin-name" required placeholder="e.g. KAIRO CYBER TEE" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Category</label>
+              <select id="admin-category" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                <option value="tshirts">T-Shirts</option>
+                <option value="hoodies">Hoodies</option>
+                <option value="jackets">Jackets</option>
+                <option value="pants">Pants & Cargos</option>
+                <option value="accessories">Accessories</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Selling Price (LKR)</label>
+              <input type="number" id="admin-price" required placeholder="4800" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Original Price (LKR) (Optional)</label>
+              <input type="number" id="admin-orig-price" placeholder="5500" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Product Description</label>
+              <textarea id="admin-desc" required rows="3" placeholder="Describe material, fit, and style details..." class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Available Sizes (Comma Separated)</label>
+              <input type="text" id="admin-sizes" placeholder="S, M, L, XL, XXL" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Product Image URL (Optional)</label>
+              <input type="text" id="admin-img-url" placeholder="https://... or images/tee.jpg" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Or Upload Photo File directly</label>
+              <input type="file" id="admin-img-file" accept="image/*" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2 text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30">
+            </div>
+
+            <div class="md:col-span-2 pt-2">
+              <button type="submit" class="w-full py-4 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-xl uppercase tracking-wider text-sm transition shadow-lg shadow-cyan-500/20">
+                <i class="fa-solid fa-plus-circle text-lg"></i> Publish Product To Website Catalog
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Inventory List Table -->
+        <div class="glass-panel p-6 rounded-3xl border border-gray-800">
+          <h2 class="font-heading text-xl font-bold text-white mb-4">Current Active Products</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="text-xs uppercase bg-gray-900/80 text-gray-400 border-b border-gray-800">
+                <tr>
+                  <th class="p-3">Image</th>
+                  <th class="p-3">Name</th>
+                  <th class="p-3">Category</th>
+                  <th class="p-3">Price</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-products-table-body">
+                <!-- Dynamically rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- QUICK VIEW MODAL OVERLAY -->
+  <div id="quickview-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="relative w-full max-w-3xl glass-panel bg-brandDark/95 rounded-3xl border border-gray-800 p-6 sm:p-8 max-h-[90vh] overflow-y-auto" id="quickview-content">
+      <!-- Content populated by js/app.js -->
+    </div>
+  </div>
+
+  <!-- SLIDE-OVER SHOPPING BAG DRAWER -->
+  <div id="cart-backdrop" onclick="closeCartDrawer()" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden transition-opacity"></div>
+  <div id="cart-drawer" class="fixed top-0 right-0 z-50 w-full max-w-md h-full bg-brandDark border-l border-gray-800 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
+    
+    <!-- Drawer Header -->
+    <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-bag-shopping text-cyan-400 text-xl"></i>
+        <h3 class="font-heading text-lg font-bold text-white uppercase">Your Shopping Bag</h3>
+      </div>
+      <button onclick="closeCartDrawer()" class="text-gray-400 hover:text-white text-xl">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Drawer Body -->
+    <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4">
+      <!-- Items dynamically populated -->
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="p-6 border-t border-gray-800 bg-gray-950/90">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-sm font-semibold text-gray-400">Total Amount</span>
+        <span id="cart-subtotal" class="text-2xl font-black text-cyan-400">LKR 0</span>
+      </div>
+      <button onclick="checkoutCartWhatsApp()" class="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-xl uppercase tracking-wider text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+        <i class="fa-brands fa-whatsapp text-lg"></i> Checkout Via WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER SECTION -->
+  <footer class="bg-gray-950 border-t border-gray-800/80 pt-16 pb-12 mt-20">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-10">
+      
+      <!-- Col 1: Brand Info -->
+      <div class="space-y-4">
+        <img src="images/logo.jpg" class="h-10 w-auto object-contain">
+        <p id="footer-slogan" class="font-heading text-xs font-bold text-cyan-300 tracking-widest uppercase">"WEAR BEYOND TIME"</p>
+        <p class="text-xs text-gray-400 leading-relaxed">
+          Premium urban streetwear crafted in Sri Lanka. Blending luxury materials with timeless contemporary design.
+        </p>
+      </div>
+
+      <!-- Col 2: Quick Links -->
+      <div>
+        <h4 class="font-heading text-sm font-bold text-white uppercase tracking-wider mb-4">Quick Navigation</h4>
+        <ul class="space-y-2 text-xs text-gray-400">
+          <li><button onclick="switchPage('home')" class="hover:text-cyan-400 transition">Home Page</button></li>
+          <li><button onclick="switchPage('shop')" class="hover:text-cyan-400 transition">Shop All Clothes</button></li>
+          <li><button onclick="switchPage('about')" class="hover:text-cyan-400 transition">About Brand Story</button></li>
+          <li><button onclick="switchPage('contact')" class="hover:text-cyan-400 transition">Contact & Location</button></li>
+          <li><button onclick="switchPage('admin')" class="hover:text-amber-400 text-gray-500 transition flex items-center gap-1 mt-2 pt-2 border-t border-gray-900"><i class="fa-solid fa-lock text-[10px]"></i> Owner Portal</button></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Direct Contact Details -->
+      <div>
+        <h4 class="font-heading text-sm font-bold text-white uppercase tracking-wider mb-4">Contact Info</h4>
+        <ul class="space-y-3 text-xs text-gray-300">
+          <li class="flex items-start gap-2.5">
+            <i class="fa-brands fa-whatsapp text-emerald-400 text-sm mt-0.5"></i>
+            <a id="footer-wa-link" href="https://wa.me/94741565677" target="_blank" class="hover:text-emerald-400 font-semibold transition"><span id="footer-wa-phone">0741565677</span></a>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <i class="fa-solid fa-location-dot text-cyan-400 text-sm mt-0.5"></i>
+            <span id="footer-address">Galedanda, Gonawala</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <i class="fa-solid fa-envelope text-amber-400 text-sm mt-0.5"></i>
+            <a id="footer-email-link" href="mailto:timekairo8@gmail.com" class="hover:text-amber-300 transition"><span id="footer-email-val">timekairo8@gmail.com</span></a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Social Channels -->
+      <div>
+        <h4 class="font-heading text-sm font-bold text-white uppercase tracking-wider mb-4">Follow Time Kairo</h4>
+        <div class="flex items-center gap-3">
+          <a id="footer-wa-icon" href="https://wa.me/94741565677" target="_blank" class="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 hover:border-emerald-400 text-emerald-400 flex items-center justify-center transition">
+            <i class="fa-brands fa-whatsapp text-lg"></i>
+          </a>
+          <a id="footer-tiktok-link" href="https://www.tiktok.com/@timekairo" target="_blank" class="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 hover:border-pink-400 text-pink-400 flex items-center justify-center transition">
+            <i class="fa-brands fa-tiktok text-lg"></i>
+          </a>
+          <a id="footer-ig-link" href="https://www.instagram.com/timekairo" target="_blank" class="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 hover:border-purple-400 text-purple-400 flex items-center justify-center transition">
+            <i class="fa-brands fa-instagram text-lg"></i>
+          </a>
+          <a id="footer-fb-link" href="https://www.facebook.com/timekairo" target="_blank" class="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 hover:border-blue-500 text-blue-400 flex items-center justify-center transition">
+            <i class="fa-brands fa-facebook text-lg"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-gray-900 text-center text-[11px] text-gray-400">
+      &copy; 2026 TIME KAIRO. All Rights Reserved. Wear Beyond Time ⏳
+    </div>
+  </footer>
+
+  <!-- Floating Firebase Live Sync Status Badge -->
+  <div id="firebase-sync-badge" class="fixed bottom-4 left-4 z-50 bg-gray-950/90 backdrop-blur-md border border-cyan-500/30 text-cyan-300 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-2.5 shadow-2xl transition-all duration-300">
+    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" id="firebase-sync-dot"></span>
+    <span id="firebase-sync-text">Connecting to Firebase Cloud...</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/api-sync.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Firebase SDK Compat Scripts (Works on file:// and http://) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <!-- Realtime Live Listener -->
+  <script>
+    function updateSyncBadge(status, message) {
+      const badge = document.getElementById("firebase-sync-badge");
+      const dot = document.getElementById("firebase-sync-dot");
+      const text = document.getElementById("firebase-sync-text");
+      if (!badge || !dot || !text) return;
+
+      if (status === 'connected') {
+        badge.className = "fixed bottom-4 left-4 z-50 bg-emerald-950/90 backdrop-blur-md border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-2.5 shadow-2xl transition-all duration-300";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
+        text.innerText = message;
+      } else if (status === 'error') {
+        badge.className = "fixed bottom-4 left-4 z-50 bg-rose-950/90 backdrop-blur-md border border-rose-500/40 text-rose-300 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-2.5 shadow-2xl transition-all duration-300";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500";
+        text.innerText = message;
+      } else {
+        badge.className = "fixed bottom-4 left-4 z-50 bg-gray-950/90 backdrop-blur-md border border-cyan-500/30 text-cyan-300 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-2.5 shadow-2xl transition-all duration-300";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
+        text.innerText = message;
+      }
+    }
+
+    const cfg = window.firebaseConfig || (typeof firebaseConfig !== "undefined" ? firebaseConfig : null);
+    if (cfg && cfg.apiKey && !cfg.apiKey.includes("YOUR_FIREBASE")) {
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(cfg);
+        }
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        window.firebaseDB = db;
+
+        updateSyncBadge('connecting', 'Connecting to Firebase Cloud...');
+
+        // Anonymous auth in case Firestore rules require authenticated requests
+        auth.signInAnonymously().catch(() => {});
+
+        // Listen for brand settings real-time changes from Firestore
+        try {
+          db.collection("settings").doc("brandInfo").onSnapshot((docSnap) => {
+            if (docSnap.exists) {
+              saveBrandInfo(docSnap.data());
+              if (typeof renderBrandInfoUI === 'function') renderBrandInfoUI();
+            }
+          });
+          db.collection("brand").doc("info").onSnapshot((docSnap) => {
+            if (docSnap.exists) {
+              saveBrandInfo(docSnap.data());
+              if (typeof renderBrandInfoUI === 'function') renderBrandInfoUI();
+            }
+          });
+        } catch(e) {}
+
+        // Global function to sync brand info to Firestore
+        window.syncBrandInfoToFirebase = async function(info) {
+          try {
+            await db.collection("settings").doc("brandInfo").set(info, { merge: true });
+            await db.collection("brand").doc("info").set(info, { merge: true });
+          } catch(e) {}
+        };
+
+        // Map storing collectionName -> Map(productId -> productObj)
+        const collectionsDataMap = new Map();
+
+        // Helper to normalize any raw product object from App/Firestore
+        const normalizeProduct = (data, defaultId) => {
+          if (!data || typeof data !== 'object') return null;
+
+          const name = data.name || data.title || data.productName || data.itemName || data.label || data.product_name || data.item_name || data.heading;
+          const rawPrice = data.price !== undefined ? data.price : (data.amount !== undefined ? data.amount : (data.itemPrice !== undefined ? data.itemPrice : (data.cost !== undefined ? data.cost : data.sellingPrice)));
+
+          if (!name && rawPrice === undefined) return null;
+
+          let price = 0;
+          if (typeof rawPrice === 'number') {
+            price = rawPrice;
+          } else if (typeof rawPrice === 'string') {
+            price = parseFloat(rawPrice.replace(/[^0-9.]/g, '')) || 0;
+          }
+
+          let rawOrigPrice = data.originalPrice || data.origPrice || data.oldPrice || data.regularPrice || data.mrp || data.original_price || price;
+          let origPrice = price;
+          if (typeof rawOrigPrice === 'number') {
+            origPrice = rawOrigPrice;
+          } else if (typeof rawOrigPrice === 'string') {
+            origPrice = parseFloat(rawOrigPrice.replace(/[^0-9.]/g, '')) || price;
+          }
+
+          let catRaw = (data.category || data.cat || data.type || data.itemCategory || data.categoryName || "tshirts").toString().toLowerCase().trim();
+          let category = "tshirts";
+          if (catRaw.includes("tee") || catRaw.includes("t-shirt") || catRaw.includes("tshirt") || catRaw.includes("shirt")) category = "tshirts";
+          else if (catRaw.includes("hood")) category = "hoodies";
+          else if (catRaw.includes("jack")) category = "jackets";
+          else if (catRaw.includes("pant") || catRaw.includes("cargo") || catRaw.includes("trouser") || catRaw.includes("bottom")) category = "pants";
+          else if (catRaw.includes("access")) category = "accessories";
+          else category = catRaw || "tshirts";
+
+          let image = data.image || data.imageUrl || data.image_url || data.img || data.imgUrl || data.imageUri || data.photo || data.photoUrl || data.photo_url || data.picture || data.src || data.cover || data.url || data.photoURL;
+          if (image && typeof image === 'object' && (image.url || image.src)) {
+            image = image.url || image.src;
+          }
+          if (!image || typeof image !== 'string' || image.startsWith("file:") || image.startsWith("content:") || image.startsWith("ph:") || image.startsWith("blob:")) {
+            if (category === "hoodies") image = "images/hoodie.jpg";
+            else if (category === "jackets") image = "images/jacket.jpg";
+            else if (category === "pants") image = "images/cargo.jpg";
+            else image = "images/tee.jpg";
+          }
+
+          const prodId = data.id || defaultId || "tk-app-" + Math.random().toString(36).substr(2, 6);
+
+          return {
+            id: String(prodId),
+            name: String(name || "Time Kairo Drop"),
+            category: category,
+            price: price,
+            originalPrice: origPrice,
+            image: image,
+            description: String(data.description || data.desc || data.details || data.info || data.about || "Wear Beyond Time — Premium luxury streetwear."),
+            sizes: Array.isArray(data.sizes) ? data.sizes : (typeof data.sizes === 'string' ? data.sizes.split(',').map(s => s.trim()) : (Array.isArray(data.sizeList) ? data.sizeList : ["S", "M", "L", "XL"])),
+            colors: Array.isArray(data.colors) ? data.colors : (typeof data.colors === 'string' ? data.colors.split(',').map(c => c.trim()) : (Array.isArray(data.colorList) ? data.colorList : ["Standard"])),
+            isNew: data.isNew !== undefined ? Boolean(data.isNew) : (data.is_new !== undefined ? Boolean(data.is_new) : true),
+            isFeatured: data.isFeatured !== undefined ? Boolean(data.isFeatured) : (data.featured !== undefined ? Boolean(data.featured) : true),
+            stock: data.stock || data.inStock || data.status || "In Stock"
+          };
+        };
+
+        // Extract products from a document data (supports single doc, inner array, or map of objects)
+        const extractProductsFromDoc = (data, docId) => {
+          const list = [];
+          if (!data || typeof data !== 'object') return list;
+
+          // 1. Check for inner array
+          const possibleArray = data.products || data.items || data.catalog || data.data || data.list || data.clothing || data.goods || data.inventory;
+          if (Array.isArray(possibleArray)) {
+            possibleArray.forEach((item, idx) => {
+              const norm = normalizeProduct(item, docId + "-" + idx);
+              if (norm) list.push(norm);
+            });
+            return list;
+          }
+
+          // 2. Check if top-level data is a single product
+          const singleNorm = normalizeProduct(data, docId);
+          if (singleNorm) {
+            list.push(singleNorm);
+            return list;
+          }
+
+          // 3. Check if document contains a map/object of product objects
+          Object.keys(data).forEach((key) => {
+            const val = data[key];
+            if (val && typeof val === 'object' && !Array.isArray(val)) {
+              const norm = normalizeProduct(val, key);
+              if (norm) list.push(norm);
+            }
+          });
+
+          return list;
+        };
+
+        const processCollectionSnapshot = (snapshot, colName) => {
+          const colMap = new Map();
+
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const prods = extractProductsFromDoc(data, docSnap.id);
+            prods.forEach(p => colMap.set(p.id, p));
+          });
+
+          collectionsDataMap.set(colName, colMap);
+
+          // Flatten products from all collections
+          const allFirestoreProductsMap = new Map();
+          collectionsDataMap.forEach((colMap) => {
+            colMap.forEach((product, pId) => {
+              allFirestoreProductsMap.set(pId, product);
+            });
+          });
+
+          const firestoreItems = Array.from(allFirestoreProductsMap.values());
+          const finalProducts = [...firestoreItems];
+
+          // Merge with default seed products if not overridden by Firestore
+          if (typeof DEFAULT_PRODUCTS !== 'undefined') {
+            DEFAULT_PRODUCTS.forEach(defItem => {
+              const existsInFirestore = firestoreItems.some(f => 
+                f.id === defItem.id || 
+                f.name.toLowerCase().trim() === defItem.name.toLowerCase().trim()
+              );
+              if (!existsInFirestore) {
+                finalProducts.push(defItem);
+              }
+            });
+          }
+
+          if (finalProducts.length > 0) {
+            saveProducts(finalProducts);
+            products = finalProducts;
+            if (typeof renderHomeProducts === 'function') renderHomeProducts();
+            if (typeof renderShopProducts === 'function') renderShopProducts();
+            if (typeof renderAdminProductTable === 'function') renderAdminProductTable();
+            updateSyncBadge('connected', `🔥 Firebase Connected (${allFirestoreProductsMap.size} App Items Live)`);
+          }
+        };
+
+        // Target collections to monitor in real-time
+        const targetCollections = [
+          "products", "Products", "items", "Items", "clothing", "Clothing", 
+          "catalog", "Catalog", "store", "Store", "inventory", "shop", "Shop", 
+          "goods", "timekairo", "timekairo_products", "app_products", 
+          "clothing_items", "all_products", "data", "products_list", "itemsList"
+        ];
+        
+        // Set connected badge immediately on initialization
+        updateSyncBadge('connected', '🔥 Firebase Connected (Live Stream Active)');
+
+        targetCollections.forEach((colName) => {
+          try {
+            // Immediate Initial Fetch
+            db.collection(colName).get().then((snapshot) => {
+              processCollectionSnapshot(snapshot, colName);
+            }).catch((err) => {
+              if (err && err.message && err.message.toLowerCase().includes("permission")) {
+                updateSyncBadge('error', '⚠️ Rules Permission Denied in Firebase Console');
+              }
+            });
+
+            // Realtime Stream Listener
+            db.collection(colName).onSnapshot((snapshot) => {
+              processCollectionSnapshot(snapshot, colName);
+            }, (err) => {
+              console.warn(`Firestore listener note (${colName}):`, err.message);
+              if (err && err.message && err.message.toLowerCase().includes("permission")) {
+                updateSyncBadge('error', '⚠️ Rules Permission Denied in Firebase Console');
+              }
+            });
+          } catch(e) {}
+        });
+
+        // Global functions for firebase sync from admin portal
+        window.syncProductToFirebase = async function(product) {
+          try {
+            await db.collection("products").doc(product.id).set(product, { merge: true });
+            await db.collection("Products").doc(product.id).set(product, { merge: true });
+          } catch(e) {}
+        };
+        window.deleteProductFromFirebase = async function(productId) {
+          try {
+            await db.collection("products").doc(productId).delete();
+            await db.collection("Products").doc(productId).delete();
+          } catch(e) {}
+        };
+      } catch (err) {
+        console.error("Firebase init error:", err);
+        updateSyncBadge('error', '⚠️ Firebase Init Error: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
