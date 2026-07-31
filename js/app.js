@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function switchPage(pageId) {
   if (pageId === "admin" && !sessionStorage.getItem("admin_authenticated")) {
     const pin = prompt("🔒 Enter Time Kairo Owner PIN code to access Admin Dashboard:");
-    if (pin === "7415" || pin === "1234") {
+    if (pin === "986964") {
       sessionStorage.setItem("admin_authenticated", "true");
       showToast("🔑 Owner Access Granted!");
     } else {
@@ -91,6 +91,12 @@ function switchPage(pageId) {
 
   // Close mobile drawer if open
   closeMobileMenu();
+}
+
+function logoutAdmin() {
+  sessionStorage.removeItem("admin_authenticated");
+  showToast("🔒 Owner Panel Logged Out");
+  switchPage("home");
 }
 
 function toggleMobileMenu() {
