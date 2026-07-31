@@ -19,12 +19,31 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartUI();
   setupEventListeners();
   renderAdminProductTable();
+  if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
   renderBrandInfoUI();
 
-  // Check URL hash for direct page navigation if present
-  const hash = window.location.hash.replace("#", "");
-  if (hash && document.getElementById(`page-${hash}`)) {
-    switchPage(hash);
+  // Check URL parameters for direct order tracking: ?track=TK-84920
+  const urlParams = new URLSearchParams(window.location.search);
+  const trackParam = urlParams.get("track");
+  
+  if (trackParam) {
+    switchPage("track");
+    const trackInput = document.getElementById("track-search-input");
+    if (trackInput) trackInput.value = trackParam;
+    if (typeof searchAndTrackOrder === "function") searchAndTrackOrder(trackParam);
+  } else {
+    // Check URL hash for direct page navigation if present
+    const hash = window.location.hash.replace("#", "");
+    if (hash && hash.startsWith("track-")) {
+      const orderIdFromHash = hash.replace("track-", "");
+      switchPage("track");
+      if (typeof searchAndTrackOrder === "function") searchAndTrackOrder(orderIdFromHash);
+    } else if (hash && document.getElementById(`page-${hash}`)) {
+      switchPage(hash);
+      if (hash === "track" && typeof searchAndTrackOrder === "function") {
+        searchAndTrackOrder();
+      }
+    }
   }
 });
 
@@ -50,6 +69,12 @@ function switchPage(pageId) {
   if (targetSection) {
     targetSection.classList.add("active");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  if (pageId === "admin" && typeof renderAdminOrdersTable === "function") {
+    renderAdminOrdersTable();
+  } else if (pageId === "track" && typeof searchAndTrackOrder === "function") {
+    searchAndTrackOrder();
   }
 
   // Update nav links active styling
@@ -433,14 +458,40 @@ function closeCartDrawer() {
 }
 
 /* ==========================================
-   WHATSAPP ORDER BUILDER
+   WHATSAPP ORDER BUILDER & AUTOMATIC ORDER GENERATION
    ========================================== */
 function orderDirectWhatsApp() {
   if (!selectedQuickProduct) return;
 
   const brand = getStoredBrandInfo();
   const phone = brand.whatsappPhone || "94741565677";
-  const message = `Hello TIME KAIRO! 👋\nI want to order:\n\n📌 *Product*: ${selectedQuickProduct.name}\n📏 *Size*: ${selectedSize}\n🎨 *Color*: ${selectedColor}\n💰 *Price*: LKR ${selectedQuickProduct.price.toLocaleString()}\n\nSlogan: ${brand.slogan} ⏳\nPlease confirm availability & delivery details.`;
+  const newOrderId = typeof generateOrderId === "function" ? generateOrderId() : `TK-${Math.floor(10000 + Math.random() * 90000)}`;
+  const baseUrl = window.location.origin + window.location.pathname;
+  const trackingLink = `${baseUrl}?track=${newOrderId}`;
+
+  // Automatically save order locally and push to Firestore
+  const now = new Date();
+  const timeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const autoOrder = {
+    id: newOrderId,
+    customerName: "Website Customer",
+    customerPhone: "",
+    address: "Pending Address Confirmation",
+    items: [
+      { name: selectedQuickProduct.name, size: selectedSize || "Standard", color: selectedColor || "Standard", price: selectedQuickProduct.price, qty: 1 }
+    ],
+    totalPrice: selectedQuickProduct.price,
+    status: "placed",
+    statusStep: 1,
+    locationNote: "Order initiated via Website. Awaiting WhatsApp confirmation.",
+    createdAt: timeStr,
+    updatedAt: timeStr
+  };
+
+  if (typeof saveSingleOrder === "function") saveSingleOrder(autoOrder);
+  if (typeof window.syncOrderToFirebase === "function") window.syncOrderToFirebase(autoOrder);
+
+  const message = `Hello TIME KAIRO! 👋\nI would like to order:\n\n📦 *Order ID*: #${newOrderId}\n📌 *Product*: ${selectedQuickProduct.name}\n📏 *Size*: ${selectedSize}\n🎨 *Color*: ${selectedColor}\n💰 *Price*: LKR ${selectedQuickProduct.price.toLocaleString()}\n\n📍 *Live Order Tracking Link*:\n${trackingLink}\n\n⏳ *${brand.slogan}*`;
 
   const encodedUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(encodedUrl, "_blank");
@@ -454,16 +505,478 @@ function checkoutCartWhatsApp() {
 
   const brand = getStoredBrandInfo();
   const phone = brand.whatsappPhone || "94741565677";
+  const newOrderId = typeof generateOrderId === "function" ? generateOrderId() : `TK-${Math.floor(10000 + Math.random() * 90000)}`;
+  const baseUrl = window.location.origin + window.location.pathname;
+  const trackingLink = `${baseUrl}?track=${newOrderId}`;
+
   let itemsText = cart.map((item, idx) => 
     `${idx + 1}. *${item.name}* (Size: ${item.size}) x ${item.qty} = LKR ${(item.price * item.qty).toLocaleString()}`
   ).join("\n");
 
   const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
 
-  const message = `Hello TIME KAIRO! 🛍️\nI would like to place an order from your website:\n\n${itemsText}\n\n💵 *Total Amount*: LKR ${total.toLocaleString()}\n\n📍 Delivery Address: (Please reply with your address)\n⏳ *${brand.slogan}*`;
+  // Save auto order
+  const now = new Date();
+  const timeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const autoOrder = {
+    id: newOrderId,
+    customerName: "Website Customer",
+    customerPhone: "",
+    address: "Pending Address Confirmation",
+    items: JSON.parse(JSON.stringify(cart)),
+    totalPrice: total,
+    status: "placed",
+    statusStep: 1,
+    locationNote: "Cart Order placed via Website. Awaiting WhatsApp confirmation.",
+    createdAt: timeStr,
+    updatedAt: timeStr
+  };
+
+  if (typeof saveSingleOrder === "function") saveSingleOrder(autoOrder);
+  if (typeof window.syncOrderToFirebase === "function") window.syncOrderToFirebase(autoOrder);
+
+  const message = `Hello TIME KAIRO! 🛍️\nI would like to place an order from your website:\n\n📦 *Order ID*: #${newOrderId}\n\n${itemsText}\n\n💵 *Total Amount*: LKR ${total.toLocaleString()}\n\n📍 *Live Order Tracking Link*:\n${trackingLink}\n\n⏳ *${brand.slogan}*`;
 
   const encodedUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(encodedUrl, "_blank");
+}
+
+/* ==========================================
+   LIVE ORDER TRACKING & OWNER CONTROLS
+   ========================================== */
+let activeTrackOrderId = null;
+
+function searchAndTrackOrder(queryId) {
+  const container = document.getElementById("tracking-result-container");
+  if (!container) return;
+
+  const orders = typeof getStoredOrders === "function" ? getStoredOrders() : [];
+  const searchInput = document.getElementById("track-search-input");
+  const query = (queryId || (searchInput ? searchInput.value : "")).trim().toUpperCase();
+
+  if (!query) {
+    if (orders.length > 0) {
+      renderOrderTrackingUI(orders[0]);
+      activeTrackOrderId = orders[0].id;
+    } else {
+      container.innerHTML = `
+        <div class="text-center py-16 glass-panel rounded-3xl border border-gray-800">
+          <i class="fa-solid fa-truck-ramp-box text-5xl text-gray-600 mb-4"></i>
+          <h3 class="font-heading text-xl font-bold text-white">No Active Orders Yet</h3>
+          <p class="text-xs text-gray-400 mt-2">Enter your Order ID above (e.g. TK-84920) to view your live tracking status.</p>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  const matchedOrder = orders.find(o => 
+    o.id.toUpperCase() === query || 
+    (o.customerPhone && o.customerPhone.replace(/[^0-9]/g, '').includes(query.replace(/[^0-9]/g, '')))
+  );
+
+  if (matchedOrder) {
+    activeTrackOrderId = matchedOrder.id;
+    renderOrderTrackingUI(matchedOrder);
+  } else {
+    activeTrackOrderId = null;
+    container.innerHTML = `
+      <div class="text-center py-16 glass-panel rounded-3xl border border-red-500/30 bg-red-950/10">
+        <i class="fa-solid fa-circle-exclamation text-5xl text-rose-500 mb-4 animate-bounce"></i>
+        <h3 class="font-heading text-xl font-bold text-white">Order ID "${query}" Not Found</h3>
+        <p class="text-xs text-gray-400 mt-2">Please double check your Order ID or contact the Time Kairo team on WhatsApp.</p>
+        <a href="https://wa.me/94741565677?text=Hi%20Time%20Kairo!%20I%20am%20trying%20to%20track%20order%20${encodeURIComponent(query)}" target="_blank" class="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-full text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/20">
+          <i class="fa-brands fa-whatsapp text-base"></i> Ask Us On WhatsApp
+        </a>
+      </div>
+    `;
+  }
+}
+
+function handleCustomerTrackSearch(event) {
+  event.preventDefault();
+  const inputVal = document.getElementById("track-search-input").value;
+  searchAndTrackOrder(inputVal);
+}
+
+function refreshActiveCustomerTracking() {
+  if (activeTrackOrderId) {
+    const orders = typeof getStoredOrders === "function" ? getStoredOrders() : [];
+    const updatedOrder = orders.find(o => o.id === activeTrackOrderId);
+    if (updatedOrder) {
+      renderOrderTrackingUI(updatedOrder);
+    }
+  }
+}
+
+function renderOrderTrackingUI(order) {
+  const container = document.getElementById("tracking-result-container");
+  if (!container) return;
+
+  const currentStep = order.statusStep || (order.status === "delivered" ? 4 : (order.status === "in_transit" ? 3 : (order.status === "processing" ? 2 : 1)));
+  const progressPercent = ((currentStep - 1) / 3) * 100;
+
+  let statusBadgeHTML = '';
+  if (order.status === 'delivered') {
+    statusBadgeHTML = `<span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-black uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Delivered Successfully</span>`;
+  } else if (order.status === 'in_transit') {
+    statusBadgeHTML = `<span class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-black uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-truck-fast animate-pulse"></i> In Transit / On The Way</span>`;
+  } else if (order.status === 'processing') {
+    statusBadgeHTML = `<span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-gears animate-spin"></i> Processing & Packing</span>`;
+  } else {
+    statusBadgeHTML = `<span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-black uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-box font-bold"></i> Order Received</span>`;
+  }
+
+  container.innerHTML = `
+    <!-- MAIN LIVE STATUS CARD -->
+    <div class="glass-panel p-6 sm:p-10 rounded-3xl border border-cyan-500/40 mb-8 bg-gradient-to-br from-gray-900/90 via-black to-cyan-950/20 shadow-2xl">
+      
+      <!-- Top Order Bar -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-gray-800">
+        <div>
+          <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Time Kairo Official Live Tracking</span>
+          <div class="flex flex-wrap items-center gap-3 mt-1">
+            <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-white">ORDER #${order.id}</h2>
+            ${statusBadgeHTML}
+          </div>
+          <p class="text-xs text-gray-400 mt-1">Placed on: <span class="text-gray-300 font-semibold">${order.createdAt || 'Recent'}</span></p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="copyTrackingLink('${order.id}')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-cyan-300 border border-cyan-500/30 rounded-xl text-xs font-bold transition flex items-center gap-2">
+            <i class="fa-solid fa-link"></i> Copy Tracking Link
+          </button>
+        </div>
+      </div>
+
+      <!-- VISUAL STEPPER TIMELINE -->
+      <div class="py-10">
+        <div class="relative max-w-3xl mx-auto px-4">
+          
+          <!-- Background Bar -->
+          <div class="tracking-stepper-line mb-8">
+            <div class="tracking-stepper-progress" style="width: ${progressPercent}%;"></div>
+          </div>
+
+          <!-- Step Nodes Grid -->
+          <div class="grid grid-cols-4 gap-2 text-center relative z-10 -mt-14">
+            
+            <!-- Step 1: Order Placed -->
+            <div class="flex flex-col items-center">
+              <div class="tracking-step-dot ${currentStep >= 1 ? (currentStep > 1 ? 'completed' : 'active') : ''}">
+                <i class="fa-solid ${currentStep > 1 ? 'fa-check text-sm' : 'fa-box text-sm'}"></i>
+              </div>
+              <h4 class="font-bold text-xs ${currentStep >= 1 ? 'text-cyan-300' : 'text-gray-500'} mt-3 uppercase tracking-wider">Order Placed</h4>
+              <p class="text-[10px] text-gray-400 hidden sm:block mt-0.5">Confirmed & Queued</p>
+            </div>
+
+            <!-- Step 2: Processing -->
+            <div class="flex flex-col items-center">
+              <div class="tracking-step-dot ${currentStep >= 2 ? (currentStep > 2 ? 'completed' : 'active') : ''}">
+                <i class="fa-solid ${currentStep > 2 ? 'fa-check text-sm' : 'fa-shirt text-sm'}"></i>
+              </div>
+              <h4 class="font-bold text-xs ${currentStep >= 2 ? 'text-cyan-300' : 'text-gray-500'} mt-3 uppercase tracking-wider">Processing</h4>
+              <p class="text-[10px] text-gray-400 hidden sm:block mt-0.5">Quality Check & Packing</p>
+            </div>
+
+            <!-- Step 3: In Transit -->
+            <div class="flex flex-col items-center">
+              <div class="tracking-step-dot ${currentStep >= 3 ? (currentStep > 3 ? 'completed' : 'active') : ''}">
+                <i class="fa-solid ${currentStep > 3 ? 'fa-check text-sm' : 'fa-truck-fast text-sm'}"></i>
+              </div>
+              <h4 class="font-bold text-xs ${currentStep >= 3 ? 'text-cyan-300' : 'text-gray-500'} mt-3 uppercase tracking-wider">On The Way</h4>
+              <p class="text-[10px] text-gray-400 hidden sm:block mt-0.5">Handed to Courier</p>
+            </div>
+
+            <!-- Step 4: Delivered -->
+            <div class="flex flex-col items-center">
+              <div class="tracking-step-dot ${currentStep >= 4 ? 'completed active' : ''}">
+                <i class="fa-solid ${currentStep >= 4 ? 'fa-check text-sm' : 'fa-house-flag text-sm'}"></i>
+              </div>
+              <h4 class="font-bold text-xs ${currentStep >= 4 ? 'text-emerald-400' : 'text-gray-500'} mt-3 uppercase tracking-wider">Delivered</h4>
+              <p class="text-[10px] text-gray-400 hidden sm:block mt-0.5">Package Arrived</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE LOCATION & COURIER UPDATE BOX -->
+      <div class="p-6 rounded-2xl bg-cyan-950/30 border border-cyan-500/30 flex items-start gap-4">
+        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 flex items-center justify-center text-xl flex-shrink-0">
+          <i class="fa-solid fa-location-dot animate-bounce"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <span class="text-xs font-black uppercase text-cyan-400 tracking-wider">Live Courier Location & Status Note</span>
+            <span class="text-[10px] text-gray-400">Last Updated: ${order.updatedAt || 'Just Now'}</span>
+          </div>
+          <p class="text-sm font-bold text-white mt-1 leading-relaxed">${order.locationNote || 'Package prepared at Time Kairo HQ.'}</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ORDER DETAILS & ITEMS LIST GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- Items Summary (2 Cols) -->
+      <div class="md:col-span-2 glass-panel p-6 rounded-3xl border border-gray-800">
+        <h3 class="font-heading text-lg font-bold text-white mb-4 uppercase flex items-center gap-2">
+          <i class="fa-solid fa-bag-shopping text-cyan-400"></i> Items Included In Order
+        </h3>
+        
+        <div class="space-y-3">
+          ${(order.items || []).map(item => `
+            <div class="flex items-center justify-between p-3.5 rounded-2xl bg-gray-900/80 border border-gray-800">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-300 font-bold text-sm">
+                  <i class="fa-solid fa-shirt"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-sm">${item.name}</h4>
+                  <p class="text-xs text-gray-400">Size: <span class="text-cyan-300 font-bold">${item.size || 'Standard'}</span> ${item.color ? `| Color: ${item.color}` : ''}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-black text-cyan-400 text-sm">LKR ${(item.price * (item.qty || 1)).toLocaleString()}</div>
+                <div class="text-[10px] text-gray-400">Qty: ${item.qty || 1}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-gray-800 flex justify-between items-center">
+          <span class="text-xs uppercase text-gray-400 font-extrabold">Total Amount</span>
+          <span class="font-heading text-2xl font-black text-white">LKR ${(order.totalPrice || 0).toLocaleString()}</span>
+        </div>
+      </div>
+
+      <!-- Customer Info Card (1 Col) -->
+      <div class="glass-panel p-6 rounded-3xl border border-gray-800 flex flex-col justify-between">
+        <div>
+          <h3 class="font-heading text-lg font-bold text-white mb-4 uppercase flex items-center gap-2">
+            <i class="fa-solid fa-user-check text-cyan-400"></i> Shipping Details
+          </h3>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <span class="text-gray-400 block uppercase font-bold text-[10px]">Customer Name</span>
+              <span class="text-white font-bold text-sm">${order.customerName || 'Customer'}</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block uppercase font-bold text-[10px]">Contact Phone</span>
+              <span class="text-cyan-300 font-bold text-sm">${order.customerPhone || 'N/A'}</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block uppercase font-bold text-[10px]">Delivery Address</span>
+              <span class="text-gray-200 font-medium text-xs leading-relaxed block mt-0.5">${order.address || 'Sri Lanka'}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-gray-800">
+          <a href="https://wa.me/94741565677?text=${encodeURIComponent(`Hi Time Kairo! I am inquiring about my Order #${order.id}`)}" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-xl uppercase tracking-wider text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+            <i class="fa-brands fa-whatsapp text-lg"></i> Need Order Help? Chat Us
+          </a>
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+/* ==========================================
+   OWNER ADMIN ORDERS CONTROL PANEL
+   ========================================== */
+function renderAdminOrdersTable() {
+  const container = document.getElementById("admin-orders-container");
+  if (!container) return;
+
+  const orders = typeof getStoredOrders === "function" ? getStoredOrders() : [];
+
+  if (orders.length === 0) {
+    container.innerHTML = `<p class="text-center py-8 text-gray-400 text-xs">No orders created yet. Click "Create Manual Order" above.</p>`;
+    return;
+  }
+
+  container.innerHTML = orders.map(order => {
+    return `
+      <div class="p-5 rounded-2xl bg-gray-900/80 border border-gray-800 space-y-4">
+        
+        <!-- Order Top Info Bar -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-gray-800/80">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="font-heading font-black text-lg text-cyan-400">#${order.id}</span>
+            <span class="text-xs text-white font-bold">${order.customerName}</span>
+            <span class="text-xs text-gray-400">(${order.customerPhone || 'Phone N/A'})</span>
+          </div>
+          <div class="text-xs font-bold text-gray-300">
+            Total: <span class="text-white">LKR ${(order.totalPrice || 0).toLocaleString()}</span>
+          </div>
+        </div>
+
+        <!-- Status & Courier Note Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          
+          <!-- Status Dropdown -->
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase text-gray-400 mb-1">Live Order Status</label>
+            <select id="admin-status-${order.id}" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs font-bold text-white focus:border-cyan-400 focus:outline-none">
+              <option value="placed" ${order.status === 'placed' ? 'selected' : ''}>Order Placed 📦 (Step 1)</option>
+              <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing & Packing ⚙️ (Step 2)</option>
+              <option value="in_transit" ${order.status === 'in_transit' ? 'selected' : ''}>On The Way / In Transit 🚚 (Step 3)</option>
+              <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered ✅ (Step 4)</option>
+              <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled ❌</option>
+            </select>
+          </div>
+
+          <!-- Location Note Input -->
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase text-gray-400 mb-1">Current Courier Location / Note</label>
+            <input type="text" id="admin-location-${order.id}" value="${order.locationNote || ''}" placeholder="e.g. Colombo Hub - Dispatched" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-400 focus:outline-none">
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-2 pt-4 md:pt-0">
+            <button onclick="updateAdminOrderStatus('${order.id}')" class="flex-1 py-2 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-xl text-xs uppercase tracking-wider transition shadow">
+              <i class="fa-solid fa-floppy-disk"></i> Save & Sync
+            </button>
+            <button onclick="shareTrackingWhatsApp('${order.id}')" class="p-2 bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-black border border-emerald-500/40 rounded-xl text-xs transition" title="Share via WhatsApp">
+              <i class="fa-brands fa-whatsapp text-lg"></i>
+            </button>
+            <button onclick="copyTrackingLink('${order.id}')" class="p-2 bg-gray-800 hover:bg-gray-700 text-cyan-300 border border-cyan-500/30 rounded-xl text-xs transition" title="Copy Live Link">
+              <i class="fa-solid fa-link"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+  }).join('');
+}
+
+function updateAdminOrderStatus(orderId) {
+  const orders = typeof getStoredOrders === "function" ? getStoredOrders() : [];
+  const order = orders.find(o => o.id === orderId);
+  if (!order) return;
+
+  const statusSelect = document.getElementById(`admin-status-${orderId}`);
+  const locationInput = document.getElementById(`admin-location-${orderId}`);
+
+  if (statusSelect) order.status = statusSelect.value;
+  if (locationInput) order.locationNote = locationInput.value.trim();
+
+  if (order.status === "delivered") order.statusStep = 4;
+  else if (order.status === "in_transit") order.statusStep = 3;
+  else if (order.status === "processing") order.statusStep = 2;
+  else order.statusStep = 1;
+
+  const now = new Date();
+  order.updatedAt = now.toLocaleDateString() + " " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  if (typeof saveSingleOrder === "function") saveSingleOrder(order);
+
+  if (typeof window.syncOrderToFirebase === "function") {
+    window.syncOrderToFirebase(order);
+  }
+
+  renderAdminOrdersTable();
+  if (activeTrackOrderId === orderId) {
+    renderOrderTrackingUI(order);
+  }
+
+  showToast(`⚡ Order #${orderId} status updated live!`);
+}
+
+function copyTrackingLink(orderId) {
+  const baseUrl = window.location.origin + window.location.pathname;
+  const link = `${baseUrl}?track=${orderId}`;
+
+  navigator.clipboard.writeText(link).then(() => {
+    showToast(`📋 Live Tracking Link copied for Order #${orderId}!`);
+  }).catch(() => {
+    prompt("Copy this Live Tracking Link:", link);
+  });
+}
+
+function shareTrackingWhatsApp(orderId) {
+  const orders = typeof getStoredOrders === "function" ? getStoredOrders() : [];
+  const order = orders.find(o => o.id === orderId);
+  if (!order) return;
+
+  const baseUrl = window.location.origin + window.location.pathname;
+  const trackingLink = `${baseUrl}?track=${orderId}`;
+
+  const message = `Hello ${order.customerName}! 👋\nTrack your TIME KAIRO order live here:\n\n📦 *Order ID*: #${order.id}\n🚚 *Status*: ${order.status.toUpperCase()}\n📍 *Location*: ${order.locationNote || 'In Progress'}\n\n👉 *Live Tracking Link*:\n${trackingLink}\n\nWear Beyond Time ⏳`;
+
+  let phone = (order.customerPhone || '').replace(/[^0-9]/g, '');
+  if (phone.startsWith("0")) phone = "94" + phone.slice(1);
+
+  const waUrl = `https://wa.me/${phone || '94741565677'}?text=${encodeURIComponent(message)}`;
+  window.open(waUrl, "_blank");
+}
+
+function openCreateOrderModal() {
+  const modal = document.getElementById("create-order-modal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+}
+
+function closeCreateOrderModal() {
+  const modal = document.getElementById("create-order-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+}
+
+function handleCreateOrderSubmit(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("order-customer-name").value.trim();
+  const phone = document.getElementById("order-customer-phone").value.trim();
+  const address = document.getElementById("order-customer-address").value.trim();
+  const itemDesc = document.getElementById("order-item-desc").value.trim();
+  const totalPrice = parseFloat(document.getElementById("order-total-price").value) || 0;
+  const status = document.getElementById("order-initial-status").value;
+  const locationNote = document.getElementById("order-initial-location").value.trim() || "Time Kairo HQ";
+
+  const newOrderId = typeof generateOrderId === "function" ? generateOrderId() : `TK-${Math.floor(10000 + Math.random() * 90000)}`;
+  const now = new Date();
+  const timeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const newOrder = {
+    id: newOrderId,
+    customerName: name,
+    customerPhone: phone,
+    address: address,
+    items: [
+      { name: itemDesc, size: "Standard", price: totalPrice, qty: 1 }
+    ],
+    totalPrice: totalPrice,
+    status: status,
+    statusStep: status === 'delivered' ? 4 : (status === 'in_transit' ? 3 : (status === 'processing' ? 2 : 1)),
+    locationNote: locationNote,
+    createdAt: timeStr,
+    updatedAt: timeStr
+  };
+
+  if (typeof saveSingleOrder === "function") saveSingleOrder(newOrder);
+
+  if (typeof window.syncOrderToFirebase === "function") {
+    window.syncOrderToFirebase(newOrder);
+  }
+
+  renderAdminOrdersTable();
+  closeCreateOrderModal();
+  document.getElementById("create-order-form").reset();
+
+  showToast(`✨ New Order #${newOrderId} Created!`);
+  copyTrackingLink(newOrderId);
 }
 
 /* ==========================================

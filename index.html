@@ -67,6 +67,9 @@
           <button onclick="switchPage('shop')" data-page="shop" class="nav-link text-gray-300 hover:text-cyan-300 py-1 transition">Shop Catalog</button>
           <button onclick="switchPage('about')" data-page="about" class="nav-link text-gray-300 hover:text-cyan-300 py-1 transition">About Us</button>
           <button onclick="switchPage('contact')" data-page="contact" class="nav-link text-gray-300 hover:text-cyan-300 py-1 transition">Contact</button>
+          <button onclick="switchPage('track')" data-page="track" class="nav-link text-cyan-300 hover:text-cyan-200 py-1 transition flex items-center gap-1.5 font-bold">
+            <i class="fa-solid fa-truck-fast text-xs"></i> Track Order
+          </button>
           
           <!-- Owner Admin Access Portal -->
           <button onclick="switchPage('admin')" data-page="admin" class="nav-link text-amber-400 hover:text-amber-300 border border-amber-500/40 bg-amber-500/10 px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-500/10">
@@ -101,6 +104,9 @@
     <div id="mobile-menu" class="hidden md:hidden border-t border-gray-800 bg-brandDark/95 backdrop-blur-xl px-4 py-4 space-y-3">
       <button onclick="switchPage('home')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">Home</button>
       <button onclick="switchPage('shop')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">Shop Catalog</button>
+      <button onclick="switchPage('track')" class="block w-full text-left py-2 px-3 rounded-lg text-cyan-300 hover:bg-gray-800 text-sm font-bold flex items-center gap-2">
+        <i class="fa-solid fa-truck-fast"></i> Track Order
+      </button>
       <button onclick="switchPage('about')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">About Us</button>
       <button onclick="switchPage('contact')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">Contact Us</button>
       <button onclick="switchPage('admin')" class="block w-full text-left py-2 px-3 rounded-lg text-amber-400 bg-amber-500/10 border border-amber-500/30 text-sm font-bold flex items-center justify-between">
@@ -419,7 +425,42 @@
       </div>
     </section>
 
-    <!-- ================= PAGE 5: OWNER ADMIN PORTAL (PRIVATE FOR OWNER ONLY) ================= -->
+    <!-- ================= PAGE 5: LIVE ORDER TRACKING (CUSTOMER VIEW) ================= -->
+    <section id="page-track" class="page-section">
+      <div class="max-w-5xl mx-auto px-4 py-12">
+        
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-extrabold uppercase tracking-widest mb-3 shadow-lg shadow-cyan-500/10">
+            <i class="fa-solid fa-truck-fast text-cyan-400"></i> Real-Time Live Order Tracking
+          </div>
+          <h1 class="font-heading text-4xl sm:text-5xl font-extrabold text-white uppercase">TRACK YOUR ORDER</h1>
+          <p class="text-gray-400 text-sm mt-2">Enter your Order ID (e.g. <span class="text-cyan-300 font-bold">TK-84920</span>) or phone number to see live status & location updates.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="max-w-xl mx-auto mb-12">
+          <form onsubmit="handleCustomerTrackSearch(event)" class="relative flex items-center">
+            <div class="absolute left-4 text-cyan-400 text-lg flex items-center justify-center">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <input type="text" id="track-search-input" placeholder="Enter Order ID (e.g. TK-84920 or 0771234567)" class="w-full bg-gray-900/90 border-2 border-gray-800 focus:border-cyan-400 rounded-full pl-12 pr-36 py-4 text-sm font-semibold text-white focus:outline-none transition shadow-2xl uppercase placeholder:normal-case placeholder:font-normal">
+            <button type="submit" class="absolute right-2 px-6 py-2.5 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-full text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-500/20 flex items-center gap-2">
+              <span>Track Now</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Dynamic Tracking Container -->
+        <div id="tracking-result-container">
+          <!-- Populated dynamically by app.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= PAGE 6: OWNER ADMIN PORTAL (PRIVATE FOR OWNER ONLY) ================= -->
     <section id="page-admin" class="page-section">
       <div class="max-w-5xl mx-auto px-4 py-16">
         
@@ -458,6 +499,30 @@
                 <i class="fa-solid fa-download"></i> Owner App APK Link
               </a>
             </div>
+          </div>
+        </div>
+
+        <!-- OWNER LIVE ORDERS & TRACKING LINK MANAGEMENT PANEL -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/40 mb-12 bg-gradient-to-br from-cyan-950/20 via-gray-900 to-gray-950">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-800">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[10px] font-extrabold uppercase tracking-widest mb-1">
+                <i class="fa-solid fa-satellite-dish animate-pulse"></i> Realtime Live Sync Active
+              </div>
+              <h2 class="font-heading text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-truck-ramp-box text-cyan-400"></i> Customer Orders & Live Tracking Management
+              </h2>
+              <p class="text-xs text-gray-400 mt-0.5">Update live location/status, generate tracking links & share direct to customer via WhatsApp.</p>
+            </div>
+            
+            <button onclick="openCreateOrderModal()" class="px-4 py-2.5 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-xl text-xs uppercase tracking-wider transition flex items-center gap-2 shadow-lg shadow-cyan-500/20">
+              <i class="fa-solid fa-plus font-black"></i> Create Manual Order
+            </button>
+          </div>
+
+          <!-- Orders Container -->
+          <div id="admin-orders-container" class="space-y-4">
+            <!-- Rendered by app.js -->
           </div>
         </div>
 
@@ -628,6 +693,69 @@
   <div id="quickview-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
     <div class="relative w-full max-w-3xl glass-panel bg-brandDark/95 rounded-3xl border border-gray-800 p-6 sm:p-8 max-h-[90vh] overflow-y-auto" id="quickview-content">
       <!-- Content populated by js/app.js -->
+    </div>
+  </div>
+
+  <!-- CREATE MANUAL ORDER MODAL OVERLAY (FOR OWNER) -->
+  <div id="create-order-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="relative w-full max-w-xl glass-panel bg-brandDark/95 rounded-3xl border border-cyan-500/30 p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6 pb-3 border-b border-gray-800">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase text-cyan-400 tracking-widest">Owner Action</span>
+          <h3 class="font-heading text-xl font-bold text-white uppercase">Create New Customer Order</h3>
+        </div>
+        <button onclick="closeCreateOrderModal()" class="text-gray-400 hover:text-white text-xl">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="create-order-form" onsubmit="handleCreateOrderSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Customer Full Name</label>
+          <input type="text" id="order-customer-name" required placeholder="e.g. Kasun Fernando" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Customer Phone Number</label>
+          <input type="text" id="order-customer-phone" required placeholder="e.g. 0771234567" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Delivery Address</label>
+          <input type="text" id="order-customer-address" required placeholder="e.g. No. 12, Main Street, Kandy" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Ordered Clothing Item & Size</label>
+          <input type="text" id="order-item-desc" required placeholder="e.g. KAIRO OVERSIZED GRAPHIC TEE (Size L, Black)" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Total Amount (LKR)</label>
+          <input type="number" id="order-total-price" required placeholder="4800" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Initial Status</label>
+          <select id="order-initial-status" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            <option value="placed">Order Placed 📦</option>
+            <option value="processing" selected>Processing / Packing ⚙️</option>
+            <option value="in_transit">Handed to Courier / On the Way 🚚</option>
+            <option value="delivered">Delivered ✅</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Initial Courier Note / Current Location</label>
+          <input type="text" id="order-initial-location" placeholder="e.g. Time Kairo Workshop - Packing in progress" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+        </div>
+
+        <div class="pt-3">
+          <button type="submit" class="w-full py-3.5 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-xl uppercase tracking-wider text-xs transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check-circle text-base"></i> Create Order & Generate Live Tracking Link
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -1003,6 +1131,29 @@
             await db.collection("Products").doc(productId).delete();
           } catch(e) {}
         };
+
+        // Realtime Orders Firestore Sync
+        window.syncOrderToFirebase = async function(order) {
+          try {
+            await db.collection("orders").doc(order.id).set(order, { merge: true });
+            await db.collection("Orders").doc(order.id).set(order, { merge: true });
+          } catch(e) {
+            console.warn("Firestore order sync warning:", e);
+          }
+        };
+
+        try {
+          db.collection("orders").onSnapshot((snapshot) => {
+            snapshot.forEach((docSnap) => {
+              const orderData = docSnap.data();
+              if (orderData && orderData.id) {
+                if (typeof saveSingleOrder === "function") saveSingleOrder(orderData);
+              }
+            });
+            if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
+            if (typeof refreshActiveCustomerTracking === "function") refreshActiveCustomerTracking();
+          });
+        } catch(e) {}
       } catch (err) {
         console.error("Firebase init error:", err);
         updateSyncBadge('error', '⚠️ Firebase Init Error: ' + err.message);

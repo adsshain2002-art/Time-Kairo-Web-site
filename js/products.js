@@ -152,3 +152,72 @@ function saveBrandInfo(info) {
   localStorage.setItem("timekairo_brand_info", JSON.stringify(updated));
   return updated;
 }
+
+// Order Management Default Data & Storage Manager
+const DEFAULT_ORDERS = [
+  {
+    id: "TK-84920",
+    customerName: "Kusal Perera",
+    customerPhone: "0771234567",
+    address: "No. 45, Flower Road, Colombo 07",
+    items: [
+      { name: "KAIRO OVERSIZED GRAPHIC TEE", size: "L", color: "Cyber Cyan", price: 4800, qty: 1 }
+    ],
+    totalPrice: 4800,
+    status: "in_transit", // 'placed', 'processing', 'in_transit', 'delivered', 'cancelled'
+    statusStep: 3, // 1: Placed, 2: Packing, 3: In Transit, 4: Delivered
+    locationNote: "Colombo Hub - Dispatched via Prompt Express Courier (Tracking #PRM-9921)",
+    createdAt: "2026-07-31 09:30 AM",
+    updatedAt: "2026-07-31 02:15 PM"
+  },
+  {
+    id: "TK-73104",
+    customerName: "Dilshan Silva",
+    customerPhone: "0719876543",
+    address: "Peradeniya Road, Kandy",
+    items: [
+      { name: "CHRONO CYBER HEAVYWEIGHT HOODIE", size: "XL", color: "Obsidian Black", price: 8900, qty: 1 }
+    ],
+    totalPrice: 8900,
+    status: "processing",
+    statusStep: 2,
+    locationNote: "Time Kairo Workshop - Quality check & eco-packaging in progress",
+    createdAt: "2026-07-31 11:00 AM",
+    updatedAt: "2026-07-31 11:45 AM"
+  }
+];
+
+function getStoredOrders() {
+  const saved = localStorage.getItem("timekairo_orders");
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      console.error("Failed to parse saved orders", e);
+    }
+  }
+  localStorage.setItem("timekairo_orders", JSON.stringify(DEFAULT_ORDERS));
+  return DEFAULT_ORDERS;
+}
+
+function saveOrders(orders) {
+  localStorage.setItem("timekairo_orders", JSON.stringify(orders));
+}
+
+function saveSingleOrder(order) {
+  const currentOrders = getStoredOrders();
+  const index = currentOrders.findIndex(o => o.id === order.id);
+  if (index > -1) {
+    currentOrders[index] = order;
+  } else {
+    currentOrders.unshift(order);
+  }
+  saveOrders(currentOrders);
+  return order;
+}
+
+function generateOrderId() {
+  const randomNum = Math.floor(10000 + Math.random() * 90000);
+  return `TK-${randomNum}`;
+}
+
