@@ -1064,29 +1064,37 @@
           });
 
           const firestoreItems = Array.from(allFirestoreProductsMap.values());
-          const finalProducts = [...firestoreItems];
+          let finalProducts = [...firestoreItems];
 
-          // Merge with default seed products if not overridden by Firestore
+          const deletedIds = typeof getDeletedProductIds === 'function' ? getDeletedProductIds() : [];
+
+          // Merge with default seed products if not overridden by Firestore and NOT deleted
           if (typeof DEFAULT_PRODUCTS !== 'undefined') {
             DEFAULT_PRODUCTS.forEach(defItem => {
+              const isDeleted = deletedIds.includes(String(defItem.id));
               const existsInFirestore = firestoreItems.some(f => 
-                f.id === defItem.id || 
+                String(f.id) === String(defItem.id) || 
                 f.name.toLowerCase().trim() === defItem.name.toLowerCase().trim()
               );
-              if (!existsInFirestore) {
+              if (!existsInFirestore && !isDeleted) {
                 finalProducts.push(defItem);
               }
             });
           }
 
-          if (finalProducts.length > 0) {
-            saveProducts(finalProducts);
-            products = finalProducts;
-            if (typeof renderHomeProducts === 'function') renderHomeProducts();
-            if (typeof renderShopProducts === 'function') renderShopProducts();
-            if (typeof renderAdminProductTable === 'function') renderAdminProductTable();
-            updateSyncBadge('connected', `🔥 Firebase Connected (${allFirestoreProductsMap.size} App Items Live)`);
+          // Filter out any deleted product IDs
+          if (typeof filterOutDeletedProducts === 'function') {
+            finalProducts = filterOutDeletedProducts(finalProducts);
+          } else if (deletedIds.length > 0) {
+            finalProducts = finalProducts.filter(p => !deletedIds.includes(String(p.id)));
           }
+
+          saveProducts(finalProducts);
+          products = finalProducts;
+          if (typeof renderHomeProducts === 'function') renderHomeProducts();
+          if (typeof renderShopProducts === 'function') renderShopProducts();
+          if (typeof renderAdminProductTable === 'function') renderAdminProductTable();
+          updateSyncBadge('connected', `🔥 Firebase Connected (${finalProducts.length} Products Active)`);
         };
 
         // Target collections to monitor in real-time
@@ -1123,6 +1131,24 @@
           } catch(e) {}
         });
 
+        // Realtime listener for deleted products
+        try {
+          db.collection("deleted_products").onSnapshot((snapshot) => {
+            snapshot.forEach((docSnap) => {
+              const delId = docSnap.id || docSnap.data()?.id;
+              if (delId && typeof addDeletedProductId === 'function') {
+                addDeletedProductId(delId);
+              }
+            });
+            if (typeof getStoredProducts === 'function') {
+              products = getStoredProducts();
+              if (typeof renderHomeProducts === 'function') renderHomeProducts();
+              if (typeof renderShopProducts === 'function') renderShopProducts();
+              if (typeof renderAdminProductTable === 'function') renderAdminProductTable();
+            }
+          });
+        } catch(e) {}
+
         // Global functions for firebase sync from admin portal
         window.syncProductToFirebase = async function(product) {
           try {
@@ -1131,10 +1157,22 @@
           } catch(e) {}
         };
         window.deleteProductFromFirebase = async function(productId) {
+          if (!productId) return;
+          if (typeof addDeletedProductId === 'function') {
+            addDeletedProductId(productId);
+          }
           try {
-            await db.collection("products").doc(productId).delete();
-            await db.collection("Products").doc(productId).delete();
+            await db.collection("deleted_products").doc(String(productId)).set({
+              id: String(productId),
+              deletedAt: new Date().toISOString()
+            });
           } catch(e) {}
+
+          targetCollections.forEach(async (colName) => {
+            try {
+              await db.collection(colName).doc(String(productId)).delete();
+            } catch(e) {}
+          });
         };
 
         // Realtime Orders Firestore Sync

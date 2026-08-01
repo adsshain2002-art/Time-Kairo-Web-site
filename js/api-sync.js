@@ -28,16 +28,19 @@ async function fetchProductsFromCloud() {
     if (!response.ok) return;
 
     const result = await response.json();
-    const cloudProducts = result.record || result;
+    let cloudProducts = result.record || result;
 
-    if (Array.isArray(cloudProducts) && cloudProducts.length > 0) {
+    if (Array.isArray(cloudProducts)) {
+      if (typeof filterOutDeletedProducts === 'function') {
+        cloudProducts = filterOutDeletedProducts(cloudProducts);
+      }
       const currentLocal = JSON.stringify(getStoredProducts());
       const newRemote = JSON.stringify(cloudProducts);
 
       // Only re-render if data actually changed to prevent UI flicker
       if (currentLocal !== newRemote) {
         saveProducts(cloudProducts);
-        if (typeof products !== 'undefined') products = cloudProducts;
+        if (typeof products !== 'undefined') products = getStoredProducts();
         if (typeof renderHomeProducts === 'function') renderHomeProducts();
         if (typeof renderShopProducts === 'function') renderShopProducts();
         if (typeof renderAdminProductTable === 'function') renderAdminProductTable();

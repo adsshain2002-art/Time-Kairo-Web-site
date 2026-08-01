@@ -1050,7 +1050,10 @@ function handleAddProduct(event) {
 
 function deleteAdminProduct(id) {
   if (confirm("Are you sure you want to delete this product?")) {
-    products = getStoredProducts().filter(p => p.id !== id);
+    if (typeof addDeletedProductId === "function") {
+      addDeletedProductId(id);
+    }
+    products = getStoredProducts().filter(p => String(p.id) !== String(id));
     saveProducts(products);
     
     if (typeof window.deleteProductFromFirebase === "function") {
@@ -1066,6 +1069,9 @@ function deleteAdminProduct(id) {
 
 function resetCatalogToDefault() {
   if (confirm("Reset catalog back to original seed items?")) {
+    if (typeof clearDeletedProductIds === "function") {
+      clearDeletedProductIds();
+    }
     localStorage.removeItem("timekairo_products");
     products = getStoredProducts();
     renderHomeProducts();
@@ -1074,6 +1080,7 @@ function resetCatalogToDefault() {
     showToast("Catalog reset to default!");
   }
 }
+
 
 function renderAdminProductTable() {
   const tbody = document.getElementById("admin-products-table-body");

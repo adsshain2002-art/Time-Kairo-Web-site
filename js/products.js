@@ -90,25 +90,64 @@ const DEFAULT_PRODUCTS = [
   }
 ];
 
+// Deleted products registry management
+function getDeletedProductIds() {
+  const saved = localStorage.getItem("timekairo_deleted_ids");
+  if (saved) {
+    try {
+      return JSON.parse(saved) || [];
+    } catch (e) {
+      console.error("Failed to parse deleted product ids", e);
+    }
+  }
+  return [];
+}
+
+function addDeletedProductId(id) {
+  if (!id) return;
+  const deleted = getDeletedProductIds();
+  if (!deleted.includes(String(id))) {
+    deleted.push(String(id));
+    localStorage.setItem("timekairo_deleted_ids", JSON.stringify(deleted));
+  }
+}
+
+function clearDeletedProductIds() {
+  localStorage.removeItem("timekairo_deleted_ids");
+}
+
+function filterOutDeletedProducts(productsList) {
+  if (!Array.isArray(productsList)) return [];
+  const deletedIds = getDeletedProductIds();
+  if (deletedIds.length === 0) return productsList;
+  return productsList.filter(p => p && p.id && !deletedIds.includes(String(p.id)));
+}
+
 // Helper to get products from LocalStorage or initialize default
 function getStoredProducts() {
   const saved = localStorage.getItem("timekairo_products");
+  let prods = [];
   if (saved) {
     try {
-      return JSON.parse(saved);
+      prods = JSON.parse(saved);
     } catch (e) {
       console.error("Failed to parse saved products", e);
+      prods = DEFAULT_PRODUCTS;
     }
+  } else {
+    prods = DEFAULT_PRODUCTS;
   }
-  // Set default if empty
-  localStorage.setItem("timekairo_products", JSON.stringify(DEFAULT_PRODUCTS));
-  return DEFAULT_PRODUCTS;
+  const filtered = filterOutDeletedProducts(prods);
+  localStorage.setItem("timekairo_products", JSON.stringify(filtered));
+  return filtered;
 }
 
 // Helper to save products array to LocalStorage
 function saveProducts(products) {
-  localStorage.setItem("timekairo_products", JSON.stringify(products));
+  const filtered = filterOutDeletedProducts(products);
+  localStorage.setItem("timekairo_products", JSON.stringify(filtered));
 }
+
 
 // Brand Information Default Data & Storage Manager
 const DEFAULT_BRAND_INFO = {
