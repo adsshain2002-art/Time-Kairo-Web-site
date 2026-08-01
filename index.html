@@ -1067,26 +1067,35 @@
           let finalProducts = [...firestoreItems];
 
           const deletedIds = typeof getDeletedProductIds === 'function' ? getDeletedProductIds() : [];
+          const deletedNames = typeof getDeletedProductNames === 'function' ? getDeletedProductNames() : [];
 
           // Merge with default seed products if not overridden by Firestore and NOT deleted
           if (typeof DEFAULT_PRODUCTS !== 'undefined') {
             DEFAULT_PRODUCTS.forEach(defItem => {
-              const isDeleted = deletedIds.includes(String(defItem.id));
+              const isDeletedId = deletedIds.includes(String(defItem.id));
+              const isDeletedName = deletedNames.includes(defItem.name.toLowerCase().trim());
               const existsInFirestore = firestoreItems.some(f => 
                 String(f.id) === String(defItem.id) || 
                 f.name.toLowerCase().trim() === defItem.name.toLowerCase().trim()
               );
-              if (!existsInFirestore && !isDeleted) {
+              if (!existsInFirestore && !isDeletedId && !isDeletedName) {
                 finalProducts.push(defItem);
               }
             });
           }
 
-          // Filter out any deleted product IDs
+          // Filter out any deleted product IDs or Names
           if (typeof filterOutDeletedProducts === 'function') {
             finalProducts = filterOutDeletedProducts(finalProducts);
-          } else if (deletedIds.length > 0) {
-            finalProducts = finalProducts.filter(p => !deletedIds.includes(String(p.id)));
+          } else if (deletedIds.length > 0 || deletedNames.length > 0) {
+            finalProducts = finalProducts.filter(p => {
+              if (!p) return false;
+              const pId = p.id ? String(p.id) : "";
+              const pName = p.name ? String(p.name).toLowerCase().trim() : "";
+              if (pId && deletedIds.includes(pId)) return false;
+              if (pName && deletedNames.includes(pName)) return false;
+              return true;
+            });
           }
 
           saveProducts(finalProducts);
@@ -1135,9 +1144,12 @@
         try {
           db.collection("deleted_products").onSnapshot((snapshot) => {
             snapshot.forEach((docSnap) => {
-              const delId = docSnap.id || docSnap.data()?.id;
-              if (delId && typeof addDeletedProductId === 'function') {
-                addDeletedProductId(delId);
+              const data = docSnap.data();
+              if (data) {
+                if (data.id && typeof addDeletedProduct === 'function') addDeletedProduct(data.id);
+                if (data.name && typeof addDeletedProduct === 'function') addDeletedProduct({ name: data.name });
+              } else if (docSnap.id && typeof addDeletedProduct === 'function') {
+                addDeletedProduct(docSnap.id);
               }
             });
             if (typeof getStoredProducts === 'function') {
@@ -1156,21 +1168,28 @@
             await db.collection("Products").doc(product.id).set(product, { merge: true });
           } catch(e) {}
         };
-        window.deleteProductFromFirebase = async function(productId) {
-          if (!productId) return;
-          if (typeof addDeletedProductId === 'function') {
-            addDeletedProductId(productId);
+        window.deleteProductFromFirebase = async function(productOrId) {
+          if (!productOrId) return;
+          const prodId = typeof productOrId === 'object' ? productOrId.id : productOrId;
+          const prodName = typeof productOrId === 'object' ? productOrId.name : null;
+
+          if (typeof addDeletedProduct === 'function') {
+            addDeletedProduct(productOrId);
           }
           try {
-            await db.collection("deleted_products").doc(String(productId)).set({
-              id: String(productId),
+            const docKey = String(prodId || (prodName ? prodName.replace(/[^a-zA-Z0-9]/g, '_') : Date.now()));
+            await db.collection("deleted_products").doc(docKey).set({
+              id: prodId ? String(prodId) : "",
+              name: prodName ? String(prodName).toLowerCase().trim() : "",
               deletedAt: new Date().toISOString()
             });
           } catch(e) {}
 
           targetCollections.forEach(async (colName) => {
             try {
-              await db.collection(colName).doc(String(productId)).delete();
+              if (prodId) {
+                await db.collection(colName).doc(String(prodId)).delete();
+              }
             } catch(e) {}
           });
         };

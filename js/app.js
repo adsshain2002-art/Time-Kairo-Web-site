@@ -1050,14 +1050,23 @@ function handleAddProduct(event) {
 
 function deleteAdminProduct(id) {
   if (confirm("Are you sure you want to delete this product?")) {
-    if (typeof addDeletedProductId === "function") {
-      addDeletedProductId(id);
+    const currentProducts = getStoredProducts();
+    const targetProduct = currentProducts.find(p => String(p.id) === String(id));
+    const prodRef = targetProduct || id;
+
+    if (typeof addDeletedProduct === "function") {
+      addDeletedProduct(prodRef);
     }
-    products = getStoredProducts().filter(p => String(p.id) !== String(id));
+
+    products = currentProducts.filter(p => {
+      if (String(p.id) === String(id)) return false;
+      if (targetProduct && targetProduct.name && p.name && p.name.toLowerCase().trim() === targetProduct.name.toLowerCase().trim()) return false;
+      return true;
+    });
     saveProducts(products);
     
     if (typeof window.deleteProductFromFirebase === "function") {
-      window.deleteProductFromFirebase(id);
+      window.deleteProductFromFirebase(prodRef);
     }
 
     renderHomeProducts();

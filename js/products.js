@@ -90,7 +90,7 @@ const DEFAULT_PRODUCTS = [
   }
 ];
 
-// Deleted products registry management
+// Deleted products registry management (IDs and Names)
 function getDeletedProductIds() {
   const saved = localStorage.getItem("timekairo_deleted_ids");
   if (saved) {
@@ -103,25 +103,88 @@ function getDeletedProductIds() {
   return [];
 }
 
-function addDeletedProductId(id) {
-  if (!id) return;
-  const deleted = getDeletedProductIds();
-  if (!deleted.includes(String(id))) {
-    deleted.push(String(id));
-    localStorage.setItem("timekairo_deleted_ids", JSON.stringify(deleted));
+function getDeletedProductNames() {
+  const saved = localStorage.getItem("timekairo_deleted_names");
+  if (saved) {
+    try {
+      return JSON.parse(saved) || [];
+    } catch (e) {
+      console.error("Failed to parse deleted product names", e);
+    }
   }
+  return [];
+}
+
+function addDeletedProduct(productOrId) {
+  if (!productOrId) return;
+
+  let id = null;
+  let name = null;
+
+  if (typeof productOrId === "object") {
+    id = productOrId.id;
+    name = productOrId.name;
+  } else {
+    id = productOrId;
+    const saved = localStorage.getItem("timekairo_products");
+    if (saved) {
+      try {
+        const stored = JSON.parse(saved);
+        if (Array.isArray(stored)) {
+          const found = stored.find(p => p && String(p.id) === String(id));
+          if (found) name = found.name;
+        }
+      } catch (e) {}
+    }
+  }
+
+  if (id) {
+    const deletedIds = getDeletedProductIds();
+    const idStr = String(id);
+    if (!deletedIds.includes(idStr)) {
+      deletedIds.push(idStr);
+      localStorage.setItem("timekairo_deleted_ids", JSON.stringify(deletedIds));
+    }
+  }
+
+  if (name) {
+    const deletedNames = getDeletedProductNames();
+    const normName = String(name).toLowerCase().trim();
+    if (normName && !deletedNames.includes(normName)) {
+      deletedNames.push(normName);
+      localStorage.setItem("timekairo_deleted_names", JSON.stringify(deletedNames));
+    }
+  }
+}
+
+// Backward compatibility alias
+function addDeletedProductId(id) {
+  addDeletedProduct(id);
 }
 
 function clearDeletedProductIds() {
   localStorage.removeItem("timekairo_deleted_ids");
+  localStorage.removeItem("timekairo_deleted_names");
 }
 
 function filterOutDeletedProducts(productsList) {
   if (!Array.isArray(productsList)) return [];
   const deletedIds = getDeletedProductIds();
-  if (deletedIds.length === 0) return productsList;
-  return productsList.filter(p => p && p.id && !deletedIds.includes(String(p.id)));
+  const deletedNames = getDeletedProductNames();
+  
+  if (deletedIds.length === 0 && deletedNames.length === 0) return productsList;
+
+  return productsList.filter(p => {
+    if (!p) return false;
+    const pId = p.id ? String(p.id) : "";
+    const pName = p.name ? String(p.name).toLowerCase().trim() : "";
+
+    if (pId && deletedIds.includes(pId)) return false;
+    if (pName && deletedNames.includes(pName)) return false;
+    return true;
+  });
 }
+
 
 // Helper to get products from LocalStorage or initialize default
 function getStoredProducts() {
