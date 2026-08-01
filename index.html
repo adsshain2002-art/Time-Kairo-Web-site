@@ -1050,7 +1050,15 @@
           snapshot.forEach((docSnap) => {
             const data = docSnap.data();
             const prods = extractProductsFromDoc(data, docSnap.id);
-            prods.forEach(p => colMap.set(p.id, p));
+            prods.forEach(p => {
+              if (typeof filterOutDeletedProducts === 'function') {
+                if (filterOutDeletedProducts([p]).length > 0) {
+                  colMap.set(p.id, p);
+                }
+              } else {
+                colMap.set(p.id, p);
+              }
+            });
           });
 
           collectionsDataMap.set(colName, colMap);
@@ -1189,6 +1197,18 @@
             try {
               if (prodId) {
                 await db.collection(colName).doc(String(prodId)).delete();
+              }
+              if (prodName) {
+                const snap = await db.collection(colName).where("name", "==", prodName).get();
+                snap.forEach(async (docSnap) => {
+                  try { await docSnap.ref.delete(); } catch(e) {}
+                });
+              }
+              if (prodId) {
+                const snap2 = await db.collection(colName).where("id", "==", String(prodId)).get();
+                snap2.forEach(async (docSnap) => {
+                  try { await docSnap.ref.delete(); } catch(e) {}
+                });
               }
             } catch(e) {}
           });
