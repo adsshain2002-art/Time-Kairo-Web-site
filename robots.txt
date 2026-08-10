@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adsshain2002-art.github.io/Time-Kairo-Web-site/sitemap.xml
