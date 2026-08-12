@@ -424,6 +424,49 @@
         </div>
       </div>
 
+      <!-- VERIFIED CUSTOMER REVIEWS & FEEDBACK SECTION -->
+      <div class="max-w-7xl mx-auto px-4 py-20 border-t border-gray-800/80">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-extrabold uppercase tracking-widest mb-3 shadow-lg shadow-amber-500/10">
+              <i class="fa-solid fa-star text-amber-400"></i> Verified Customer Feedback
+            </div>
+            <h2 class="font-heading text-3xl sm:text-5xl font-extrabold text-white uppercase tracking-tight">WHAT OUR CUSTOMERS SAY</h2>
+            <p class="text-gray-400 text-sm mt-2">Real feedback from streetwear enthusiasts & verified buyers across Sri Lanka.</p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-shrink-0">
+            <!-- Store Overall Rating Card -->
+            <div class="flex items-center gap-3 px-4 py-2.5 rounded-2xl glass-panel border border-cyan-500/30">
+              <div class="text-3xl font-black text-amber-400 font-mono">4.9</div>
+              <div>
+                <div class="text-amber-400 text-xs tracking-widest flex items-center gap-0.5">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </div>
+                <span class="text-[11px] font-bold text-gray-300">450+ Verified Orders</span>
+              </div>
+            </div>
+
+            <!-- Write Review Button -->
+            <button type="button" onclick="openWriteReviewModal()" class="px-6 py-3.5 bg-gradient-to-r from-amber-400 via-cyan-400 to-amber-400 hover:from-amber-300 hover:to-cyan-300 text-black font-black rounded-xl uppercase tracking-wider text-xs transition shadow-lg shadow-amber-500/20 transform hover:scale-105 flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-pen-to-square"></i> Write A Review
+            </button>
+          </div>
+        </div>
+
+        <!-- Customer Reviews Grid Container -->
+        <div id="customer-reviews-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Populated dynamically by app.js -->
+        </div>
+
+      </div>
+
       <!-- ABOUT TIME KAIRO - BRAND OVERVIEW & NATURAL SEO SECTION -->
       <div class="max-w-7xl mx-auto px-4 py-16 border-t border-gray-800/80">
         <div class="glass-panel rounded-3xl p-8 sm:p-12 border border-cyan-500/20 shadow-2xl relative overflow-hidden">
@@ -1408,6 +1451,43 @@
 
   </main>
 
+  <!-- OWNER ADMIN PIN AUTHENTICATION MODAL OVERLAY -->
+  <div id="admin-login-modal" class="fixed inset-0 z-[110] bg-black/90 backdrop-blur-xl hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="relative w-full max-w-md glass-panel bg-brandDark/95 rounded-3xl border border-amber-500/40 p-6 sm:p-8 shadow-2xl shadow-amber-500/20">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-2xl shadow-lg shadow-amber-500/10">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div>
+            <span class="text-[10px] font-extrabold uppercase text-amber-400 tracking-widest">Protected Area</span>
+            <h3 class="font-heading text-xl font-extrabold text-white uppercase tracking-tight">Owner Admin Portal</h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeAdminLoginModal()" class="text-gray-400 hover:text-white text-xl p-2 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="my-5 text-center space-y-2">
+        <p class="text-xs text-gray-300">Please enter your 6-digit Owner Security PIN code to access the Admin Management Portal.</p>
+      </div>
+
+      <form onsubmit="submitAdminPin(event)" class="space-y-4">
+        <div>
+          <label for="admin-pin-input" class="block text-xs font-extrabold text-amber-400 uppercase tracking-wider mb-2 text-center">Owner Security PIN</label>
+          <input type="password" id="admin-pin-input" maxlength="10" placeholder="Enter PIN (e.g. 986964)..." required class="w-full px-4 py-3 bg-gray-900 border border-amber-500/40 rounded-xl text-center text-xl font-mono tracking-widest text-amber-300 placeholder-gray-600 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition">
+        </div>
+        <div id="admin-pin-error" class="text-xs text-rose-400 font-bold hidden text-center flex items-center justify-center gap-1">
+          <i class="fa-solid fa-circle-exclamation"></i> Incorrect Owner PIN Code! Try again.
+        </div>
+        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 via-cyan-400 to-amber-500 hover:from-amber-400 hover:to-cyan-300 text-black font-black rounded-xl uppercase tracking-wider text-xs transition shadow-lg shadow-amber-500/20 transform hover:scale-105 cursor-pointer flex items-center justify-center gap-2">
+          <i class="fa-solid fa-key"></i> Verify PIN & Enter Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- QUICK VIEW MODAL OVERLAY -->
   <div id="quickview-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
     <div class="relative w-full max-w-3xl glass-panel bg-brandDark/95 rounded-3xl border border-gray-800 p-6 sm:p-8 max-h-[90vh] overflow-y-auto" id="quickview-content">
@@ -1617,6 +1697,72 @@
           </button>
         </div>
       </div>
+
+    </div>
+  </div>
+
+  <!-- ✍️ WRITE A CUSTOMER REVIEW MODAL OVERLAY -->
+  <div id="write-review-modal" class="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="relative w-full max-w-lg glass-panel bg-gradient-to-b from-gray-900 via-brandDark to-black rounded-3xl border border-amber-500/40 p-6 sm:p-8 max-h-[95vh] overflow-y-auto shadow-2xl shadow-amber-500/20">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-xl shadow-lg shadow-amber-500/10">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <div>
+            <h3 class="font-heading text-xl font-black text-white uppercase tracking-tight">WRITE A REVIEW</h3>
+            <p class="text-xs text-gray-400">Share your experience with Time Kairo Streetwear</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeWriteReviewModal()" class="text-gray-400 hover:text-white text-2xl font-bold p-2 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form onsubmit="submitCustomerReview(event)" class="mt-6 space-y-4">
+        
+        <!-- Rating Stars Selector -->
+        <div>
+          <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Your Rating</label>
+          <div id="review-star-rating-select" class="flex items-center gap-2 text-2xl text-amber-400 cursor-pointer">
+            <i class="fa-solid fa-star transition hover:scale-125" onclick="selectReviewStars(1)"></i>
+            <i class="fa-solid fa-star transition hover:scale-125" onclick="selectReviewStars(2)"></i>
+            <i class="fa-solid fa-star transition hover:scale-125" onclick="selectReviewStars(3)"></i>
+            <i class="fa-solid fa-star transition hover:scale-125" onclick="selectReviewStars(4)"></i>
+            <i class="fa-solid fa-star transition hover:scale-125" onclick="selectReviewStars(5)"></i>
+          </div>
+          <input type="hidden" id="review-input-rating" value="5">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Your Full Name</label>
+          <input type="text" id="review-input-name" required placeholder="e.g. Kasun Perera" class="w-full bg-gray-900 border border-gray-800 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-300 uppercase mb-1">City / Location</label>
+            <input type="text" id="review-input-city" required placeholder="e.g. Colombo, Kandy" class="w-full bg-gray-900 border border-gray-800 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Product Purchased</label>
+            <input type="text" id="review-input-product" placeholder="e.g. Kairo Graphic Tee" class="w-full bg-gray-900 border border-gray-800 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Your Feedback & Review</label>
+          <textarea id="review-input-comment" rows="3" required placeholder="Write about fabric quality, fit, delivery speed..." class="w-full bg-gray-900 border border-gray-800 focus:border-amber-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-400 via-cyan-400 to-amber-400 hover:from-amber-300 hover:to-cyan-300 text-black font-black rounded-xl uppercase tracking-wider text-xs transition shadow-lg shadow-amber-500/20 transform hover:scale-105 cursor-pointer">
+          <i class="fa-solid fa-paper-plane mr-1"></i> Submit Customer Review
+        </button>
+
+      </form>
 
     </div>
   </div>
