@@ -225,9 +225,9 @@
         <span class="text-[10px] bg-amber-400 text-black px-2 py-0.5 rounded-full font-black uppercase">10% OFF</span>
       </button>
 
-      <button onclick="toggleSiteTheme()" class="block w-full text-left py-2.5 px-3 rounded-lg text-amber-300 bg-amber-500/10 border border-amber-500/30 text-sm font-bold flex items-center justify-between">
-        <span class="flex items-center gap-2"><i class="fa-solid fa-sun text-amber-400"></i> Light / Dark Theme</span>
-        <span class="text-xs font-mono uppercase bg-amber-400/20 px-2 py-0.5 rounded text-amber-300">Toggle Mode</span>
+      <button type="button" onclick="toggleSiteTheme(); closeMobileMenu();" class="block w-full text-left py-2.5 px-3 rounded-lg text-amber-300 bg-amber-500/10 border border-amber-500/30 text-sm font-bold flex items-center justify-between">
+        <span class="flex items-center gap-2"><i id="mobile-theme-icon" class="fa-solid fa-sun text-amber-400"></i> Light / Dark Theme</span>
+        <span id="mobile-theme-text" class="text-xs font-mono uppercase bg-amber-400/20 px-2 py-0.5 rounded text-amber-300">Light Mode</span>
       </button>
 
       <button onclick="switchPage('home')" class="block w-full text-left py-2 px-3 rounded-lg text-gray-200 hover:bg-gray-800 text-sm font-semibold">Home</button>
