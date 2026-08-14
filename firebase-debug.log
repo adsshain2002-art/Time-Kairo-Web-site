@@ -1,0 +1,106 @@
+[debug] [2026-08-14T13:43:02.643Z] ----------------------------------------------------------------------
+[debug] [2026-08-14T13:43:02.646Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ADS Shain\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2026-08-14T13:43:02.646Z] CLI Version:   15.25.1
+[debug] [2026-08-14T13:43:02.646Z] Platform:      win32
+[debug] [2026-08-14T13:43:02.646Z] Node Version:  v24.18.0
+[debug] [2026-08-14T13:43:02.646Z] Detected Agent: antigravity
+[debug] [2026-08-14T13:43:02.646Z] Time:          Fri Aug 14 2026 19:13:02 GMT+0530 (India Standard Time)
+[debug] [2026-08-14T13:43:02.647Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-14T13:43:04.779Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-14T13:43:04.779Z] > authorizing via signed-in user (adsshain2002@gmail.com)
+[debug] [2026-08-14T13:43:04.779Z] [iam] checking project time-kairo for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-08-14T13:43:04.794Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:04.794Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:04.795Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/time-kairo:testIamPermissions [none]
+[debug] [2026-08-14T13:43:04.795Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/time-kairo:testIamPermissions  x-goog-user-project=time-kairo
+[debug] [2026-08-14T13:43:04.795Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/time-kairo:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-14T13:43:06.537Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/time-kairo:testIamPermissions 200
+[debug] [2026-08-14T13:43:06.538Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/time-kairo:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-14T13:43:06.541Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:06.541Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:06.542Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/time-kairo [none]
+[debug] [2026-08-14T13:43:07.194Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/time-kairo 200
+[debug] [2026-08-14T13:43:07.194Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/time-kairo {"projectId":"time-kairo","projectNumber":"514309243605","displayName":"TIME KAIRO","name":"projects/time-kairo","resources":{"hostingSite":"time-kairo"},"state":"ACTIVE","labels":{"firebase":"enabled","firebase.studio/templateappid":"barista"},"etag":"1_e230b0cf-6da1-4cb1-85cf-d9bc8b1d38f7"}
+[info] 
+[info] === Deploying to 'time-kairo'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-08-14T13:43:07.199Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:07.199Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:07.199Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/time-kairo/sites/time-kairo [none]
+[debug] [2026-08-14T13:43:08.643Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/time-kairo/sites/time-kairo 200
+[debug] [2026-08-14T13:43:08.643Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/time-kairo/sites/time-kairo {"name":"projects/time-kairo/sites/time-kairo","defaultUrl":"https://time-kairo.web.app","appId":"1:514309243605:web:8b7d68f67cf06f4fb7585c","type":"DEFAULT_SITE"}
+[debug] [2026-08-14T13:43:08.652Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:08.652Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:08.653Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/versions [none]
+[debug] [2026-08-14T13:43:08.653Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-08-14T13:43:11.182Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/versions 200
+[debug] [2026-08-14T13:43:11.182Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/versions {"name":"projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[time-kairo]: beginning deploy... 
+[info] i  hosting[time-kairo]: found 16 files in . 
+[debug] [2026-08-14T13:43:11.202Z] [hosting] uploading with 200 concurrency
+[debug] [2026-08-14T13:43:11.217Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:11.218Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:11.219Z] [hosting] hash cache [] stored for 16 files
+[debug] [2026-08-14T13:43:11.219Z] [hosting][hash queue][FINAL] {"max":11,"min":1,"avg":1.625,"active":0,"complete":16,"success":16,"errored":0,"retried":0,"total":16,"elapsed":14}
+[debug] [2026-08-14T13:43:11.220Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac:populateFiles [none]
+[debug] [2026-08-14T13:43:11.220Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac:populateFiles {"files":{"/sitemap.xml":"607e7ad7a32faf91f31d3beb9ce03e9d07442df56c1cb80a9b85125322a6f8e8","/robots.txt":"92fa2152f30f619291cd3801ac1db0c858544bd6507fbb4989afc16c59193f16","/index.html":"4a603faa78a884a629e41812146a226f2e18493147219845bc021cd8be997d35","/js/studio-3d.js":"18e4e4845ed45c6f729f58cfcbaa86591d09155126765dfddbd73cf081c951bf","/js/products.js":"90bd5d91db8eb21664a1e9143b08ee408b48d9999434ebebf69778871f1d8ac1","/js/firebase-config.js":"59507945c56c8d11487475530555d2d74008e90e7e647ebeda16d2eb7e394d5f","/js/api-sync.js":"3cbaa994fa9eb23a0119756628aec99b029a8b37d57ecf42fa8099b35e565091","/images/tee.jpg":"f0632c97217dae3ab2b337de442909c9d8dc2c6e491425c492a5ddd1c085e831","/images/logo.png":"b8de1a1531371fdbbc9112ee1424d242f851ceacd7d9f2a075021950eb45ef94","/images/logo.jpg":"b8de1a1531371fdbbc9112ee1424d242f851ceacd7d9f2a075021950eb45ef94","/images/jacket.jpg":"988d10241844d847cd2d66fe0aae9ffa6aa70ea1c80368f23c2328d9feaa11f3","/images/hoodie.jpg":"4f7a38741f880f07c30cf470b32d616b693bb563f50de4eb70e3e55d7216b432","/images/hero.jpg":"a9e12136207a6c85a11818d081aa27bb2ba271a28c0db595da6103de2f2fa2c6","/images/cargo.jpg":"4e9f4d033cc87fef6af39a60405fa8e6ed2413902d6a949a74c32bdf0b659384","/css/style.css":"e96ab22d9ff6cbc861a80edd79b740c70e7005814865a090ea846c993439ee7e","/js/app.js":"4f87af815fa9ce65cb6028e8989965ea69baf4a8b58769c86b43ae741b186a86"}}
+[debug] [2026-08-14T13:43:12.066Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac:populateFiles 200
+[debug] [2026-08-14T13:43:12.066Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac:populateFiles {"uploadRequiredHashes":["4f87af815fa9ce65cb6028e8989965ea69baf4a8b58769c86b43ae741b186a86"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/time-kairo/versions/7a3ca5fefe0bf9ac/files"}
+[debug] [2026-08-14T13:43:12.068Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:12.068Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:12.069Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/time-kairo/versions/7a3ca5fefe0bf9ac/files/4f87af815fa9ce65cb6028e8989965ea69baf4a8b58769c86b43ae741b186a86 [none]
+[debug] [2026-08-14T13:43:12.069Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/time-kairo/versions/7a3ca5fefe0bf9ac/files/4f87af815fa9ce65cb6028e8989965ea69baf4a8b58769c86b43ae741b186a86 [stream]
+[debug] [2026-08-14T13:43:12.075Z] [hosting][populate queue][FINAL] {"max":852,"min":852,"avg":852,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":858}
+[debug] [2026-08-14T13:43:12.075Z] [hosting] uploads queued: 1
+[info] i  hosting: uploading new files [0/1] (0%) 
+[debug] [2026-08-14T13:43:13.808Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/time-kairo/versions/7a3ca5fefe0bf9ac/files/4f87af815fa9ce65cb6028e8989965ea69baf4a8b58769c86b43ae741b186a86 200
+[debug] [2026-08-14T13:43:13.808Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/time-kairo/versions/7a3ca5fefe0bf9ac/files/4f87af815fa9ce65cb6028e8989965ea69baf4a8b58769c86b43ae741b186a86 [stream]
+[debug] [2026-08-14T13:43:13.808Z] [hosting][upload queue][FINAL] {"max":1741,"min":1741,"avg":1741,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":1741}
+[info] i  hosting: upload complete 
+[info] +  hosting[time-kairo]: file upload complete 
+[debug] [2026-08-14T13:43:13.809Z] [hosting] deploy completed after 2625ms
+[debug] [2026-08-14T13:43:13.809Z] [
+  {
+    "config": {
+      "site": "time-kairo",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    },
+    "version": "projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac"
+  }
+]
+[info] i  hosting[time-kairo]: finalizing version... 
+[debug] [2026-08-14T13:43:13.810Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:13.810Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:13.811Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/versions/7a3ca5fefe0bf9ac updateMask=status%2Cconfig
+[debug] [2026-08-14T13:43:13.811Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/versions/7a3ca5fefe0bf9ac {"status":"FINALIZED","config":{}}
+[debug] [2026-08-14T13:43:15.068Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/versions/7a3ca5fefe0bf9ac 200
+[debug] [2026-08-14T13:43:15.068Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/versions/7a3ca5fefe0bf9ac {"name":"projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-08-14T13:43:09.333957Z","createUser":{"email":"adsshain2002@gmail.com"},"finalizeTime":"2026-08-14T13:43:14.985435Z","finalizeUser":{"email":"adsshain2002@gmail.com"}}
+[debug] [2026-08-14T13:43:15.068Z] [hosting] finalized version for time-kairo:[object Object]
+[info] +  hosting[time-kairo]: version finalized 
+[info] i  hosting[time-kairo]: releasing new version... 
+[debug] [2026-08-14T13:43:15.069Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:15.069Z] Checked if tokens are valid: true, expires at: 1786718387174
+[debug] [2026-08-14T13:43:15.069Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/channels/live/releases versionName=projects%2F514309243605%2Fsites%2Ftime-kairo%2Fversions%2F7a3ca5fefe0bf9ac
+[debug] [2026-08-14T13:43:15.069Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/channels/live/releases {}
+[debug] [2026-08-14T13:43:18.818Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/channels/live/releases 200
+[debug] [2026-08-14T13:43:18.818Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/time-kairo/channels/live/releases {"name":"projects/514309243605/sites/time-kairo/channels/live/releases/1786714997971000","version":{"name":"projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-08-14T13:43:09.333957Z","createUser":{"email":"adsshain2002@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocKz--mAompW-5wl_jiy4iisv2bnyu0Sc5iQuWnpLxz9y0DCPkCMJA"},"finalizeTime":"2026-08-14T13:43:14.985435Z","finalizeUser":{"email":"adsshain2002@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocKz--mAompW-5wl_jiy4iisv2bnyu0Sc5iQuWnpLxz9y0DCPkCMJA"}},"type":"DEPLOY","releaseTime":"2026-08-14T13:43:17.971Z","releaseUser":{"email":"adsshain2002@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocKz--mAompW-5wl_jiy4iisv2bnyu0Sc5iQuWnpLxz9y0DCPkCMJA"}}
+[debug] [2026-08-14T13:43:18.819Z] [hosting] release: {"name":"projects/514309243605/sites/time-kairo/channels/live/releases/1786714997971000","version":{"name":"projects/514309243605/sites/time-kairo/versions/7a3ca5fefe0bf9ac","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-08-14T13:43:09.333957Z","createUser":{"email":"adsshain2002@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocKz--mAompW-5wl_jiy4iisv2bnyu0Sc5iQuWnpLxz9y0DCPkCMJA"},"finalizeTime":"2026-08-14T13:43:14.985435Z","finalizeUser":{"email":"adsshain2002@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocKz--mAompW-5wl_jiy4iisv2bnyu0Sc5iQuWnpLxz9y0DCPkCMJA"}},"type":"DEPLOY","releaseTime":"2026-08-14T13:43:17.971Z","releaseUser":{"email":"adsshain2002@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocKz--mAompW-5wl_jiy4iisv2bnyu0Sc5iQuWnpLxz9y0DCPkCMJA"}}
+[info] +  hosting[time-kairo]: release complete 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/time-kairo/overview
+[info] Hosting URL: https://time-kairo.web.app
+[debug] [2026-08-14T13:43:25.018Z] Error: Timed out.
+    at Timeout.<anonymous> (C:\Users\ADS Shain\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:296:49)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+[error] 
+[error] Error: An unexpected error has occurred.
