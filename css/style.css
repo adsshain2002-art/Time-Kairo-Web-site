@@ -10,11 +10,17 @@
   --gold-glow: #e6c875;
 }
 
+html {
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--bg-dark);
   color: #f3f4f6;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 h1, h2, h3, h4, .font-heading {
@@ -803,23 +809,34 @@ body.light-theme .ticker-wrap span {
   color: #0369a1 !important;
 }
 
-/* Category Filter Buttons in Light Theme */
+/* Category Filter Buttons in Light Theme - Ultra Clear Font & High Contrast */
 body.light-theme .cat-btn {
-  background-color: #e2e8f0 !important;
-  color: #334155 !important;
-  border: 1px solid #cbd5e1 !important;
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border: 1.5px solid #94a3b8 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
 }
 
 body.light-theme .cat-btn.active {
   background-color: #0284c7 !important;
   color: #ffffff !important;
   border-color: #0284c7 !important;
-  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25) !important;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4) !important;
+  font-weight: 900 !important;
 }
 
 body.light-theme .cat-btn:hover:not(.active) {
-  background-color: #cbd5e1 !important;
-  color: #0f172a !important;
+  background-color: #e2e8f0 !important;
+  color: #0284c7 !important;
+  border-color: #0284c7 !important;
+}
+
+/* Featured Category Overlay Text on Home Page in Light Theme */
+body.light-theme .group.relative.glass-panel .text-white,
+body.light-theme .group.relative.glass-panel h3 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9) !important;
 }
 
 /* Size and Color Selector Buttons in QuickView Modal & Studio */

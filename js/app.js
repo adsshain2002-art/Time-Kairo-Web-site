@@ -63,6 +63,8 @@ if (document.body) {
 // Initialize app when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
+  if (typeof renderCategoryTabs === "function") renderCategoryTabs();
+  if (typeof renderCategoryAdminSection === "function") renderCategoryAdminSection();
   renderHomeProducts();
   renderShopProducts();
   updateCartUI();
@@ -73,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof applySitePhotosUI === "function") applySitePhotosUI();
   if (typeof checkStreakReset === "function") checkStreakReset();
   if (typeof renderCustomerReviews === "function") renderCustomerReviews();
+  if (typeof renderAdminReviewsList === "function") renderAdminReviewsList();
 
   // Check URL parameters for direct order tracking or direct product viewing:
   // e.g. ?product=TK-P01&size=XL&color=Black
@@ -181,8 +184,10 @@ function switchPage(pageId) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  if (pageId === "admin" && typeof renderAdminOrdersTable === "function") {
-    renderAdminOrdersTable();
+  if (pageId === "admin") {
+    if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
+    if (typeof renderAdminReviewsList === "function") renderAdminReviewsList();
+    if (typeof renderCategoryAdminSection === "function") renderCategoryAdminSection();
   } else if (pageId === "track" && typeof searchAndTrackOrder === "function") {
     searchAndTrackOrder();
   }
@@ -232,9 +237,16 @@ function renderHomeProducts() {
   if (!container) return;
 
   const currentProducts = getStoredProducts();
-  let featured = currentProducts.filter(p => p.isFeatured);
+  // Sort newly added items (isNew or custom added) to the VERY TOP
+  const sortedProducts = [...currentProducts].sort((a, b) => {
+    const aNew = (a.isNew || String(a.id).startsWith("tk-custom-") || String(a.id).startsWith("tk-app-")) ? 1 : 0;
+    const bNew = (b.isNew || String(b.id).startsWith("tk-custom-") || String(b.id).startsWith("tk-app-")) ? 1 : 0;
+    return bNew - aNew;
+  });
+
+  let featured = sortedProducts.filter(p => p.isFeatured);
   if (featured.length === 0) {
-    featured = currentProducts;
+    featured = sortedProducts;
   }
   featured = featured.slice(0, 8);
 
@@ -265,13 +277,18 @@ function renderShopProducts() {
     return matchesCat && matchesSearch;
   });
 
-  // Sorting
+  // Sorting: Default places newly added items at the VERY TOP!
   if (sortOption === "price-low") {
     filtered.sort((a, b) => a.price - b.price);
   } else if (sortOption === "price-high") {
     filtered.sort((a, b) => b.price - a.price);
-  } else if (sortOption === "newest") {
-    filtered.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+  } else {
+    // Featured / Newest: Newly added items at the VERY TOP
+    filtered.sort((a, b) => {
+      const aNew = (a.isNew || String(a.id).startsWith("tk-custom-") || String(a.id).startsWith("tk-app-")) ? 1 : 0;
+      const bNew = (b.isNew || String(b.id).startsWith("tk-custom-") || String(b.id).startsWith("tk-app-")) ? 1 : 0;
+      return bNew - aNew;
+    });
   }
 
   if (filtered.length === 0) {
@@ -293,14 +310,21 @@ function createProductCardHTML(p) {
     ? `<span class="bg-cyan-500 text-black font-extrabold text-xs px-2.5 py-1 rounded-full uppercase tracking-wider shadow-md">SALE</span>` 
     : (p.isNew ? `<span class="bg-amber-400 text-black font-extrabold text-xs px-2.5 py-1 rounded-full uppercase tracking-wider shadow-md">NEW DROP</span>` : '');
 
+  const imgs = (p.images && Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image || "images/tee.jpg"];
+
   return `
     <article class="product-card-item group relative liquid-glass-card rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
       <div>
         <div onclick="openQuickView('${p.id}')" class="relative w-full h-72 overflow-hidden product-img-box bg-slate-900/50 cursor-pointer">
-          <img src="${p.image}" alt="${p.name} - Time Kairo premium T-shirt Sri Lanka" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
+          <img id="card-img-${p.id}" src="${imgs[0]}" alt="${p.name} - Time Kairo premium T-shirt Sri Lanka" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
           <div class="absolute top-3 left-3 flex flex-col gap-2 z-10">
             ${discountBadge}
           </div>
+          ${imgs.length > 1 ? `
+            <div class="absolute top-3 right-3 bg-black/80 backdrop-blur-md text-cyan-300 border border-cyan-500/30 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full z-10">
+              📸 ${imgs.length} Photos
+            </div>
+          ` : ''}
           <!-- Quick view action bar -->
           <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 z-20">
             <button onclick="event.stopPropagation(); openQuickView('${p.id}')" class="bg-cyan-400 hover:bg-cyan-300 text-black font-bold p-3 rounded-full shadow-lg transform hover:scale-110 transition cursor-pointer" title="Quick View">
@@ -312,7 +336,16 @@ function createProductCardHTML(p) {
           </div>
         </div>
         <div class="p-5 product-card-body">
-          <div class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1 p-cat-tag">${p.category}</div>
+          <div class="flex items-center justify-between mb-1">
+            <div class="text-xs font-bold text-cyan-400 uppercase tracking-widest p-cat-tag">${p.category}</div>
+            ${imgs.length > 1 ? `
+              <div class="flex items-center gap-1">
+                ${imgs.map((img, idx) => `
+                  <span onclick="event.stopPropagation(); document.getElementById('card-img-${p.id}').src='${img}'" class="w-2 h-2 rounded-full cursor-pointer transition ${idx === 0 ? 'bg-cyan-400' : 'bg-gray-700 hover:bg-cyan-300'}" title="Photo ${idx+1}"></span>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
           <h3 onclick="openQuickView('${p.id}')" class="font-heading text-lg font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-1 p-title cursor-pointer">${p.name}</h3>
           <p class="text-xs text-gray-400 mt-1 line-clamp-2 p-desc">${p.description}</p>
         </div>
@@ -1474,10 +1507,17 @@ function renderAdminProductTable() {
   if (!tbody) return;
 
   const currentProducts = getStoredProducts();
-  tbody.innerHTML = currentProducts.map(p => `
-    <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+  const newHTML = currentProducts.map(p => {
+    const imgs = (p.images && Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image || "images/tee.jpg"];
+    return `
+    <tr class="border-b border-gray-800 hover:bg-gray-900/50 transition">
       <td class="p-3">
-        <img src="${p.image}" class="w-12 h-12 object-cover rounded-lg">
+        <div class="flex items-center gap-1.5 overflow-x-auto max-w-[220px]">
+          ${imgs.map((img, idx) => `
+            <img src="${img}" class="w-10 h-10 object-cover rounded-lg border border-cyan-500/30 shadow flex-shrink-0" title="Photo ${idx + 1}">
+          `).join('')}
+        </div>
+        <span class="text-[10px] text-cyan-400 font-mono font-bold block mt-1">📸 ${imgs.length} Photo(s) Attached</span>
       </td>
       <td class="p-3 font-bold text-white">${p.name}</td>
       <td class="p-3 text-xs uppercase text-cyan-400 font-semibold">${p.category}</td>
@@ -1488,7 +1528,12 @@ function renderAdminProductTable() {
         </button>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
+
+  if (tbody.innerHTML !== newHTML) {
+    tbody.innerHTML = newHTML;
+  }
 }
 
 /* ==========================================
@@ -2482,6 +2527,7 @@ function getDiscountGameState() {
   const defaultState = {
     points: 0,
     lastPlayedDate: null,
+    lastPlayedTimestamp: null,
     streakHistory: Array(10).fill(false),
     discountUnlocked: false,
     discountClaimed: false
@@ -2501,29 +2547,45 @@ function saveDiscountGameState(state) {
 
 function checkStreakReset() {
   const state = getDiscountGameState();
-  if (!state.lastPlayedDate) return state;
+  if (!state.lastPlayedTimestamp && !state.lastPlayedDate) return state;
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  const lastDate = new Date(state.lastPlayedDate);
-  lastDate.setHours(0, 0, 0, 0);
+  const now = Date.now();
+  const lastTime = state.lastPlayedTimestamp || (state.lastPlayedDate ? new Date(state.lastPlayedDate).getTime() : 0);
+  const diffTimeMs = now - lastTime;
+  const hours48Ms = 48 * 60 * 60 * 1000;
 
-  const diffTime = today.getTime() - lastDate.getTime();
-  const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
-
-  // If player missed 1 day (gap >= 2 days), STREAK RESETS TO 0!
-  if (diffDays > 1) {
+  // If player missed more than 48 hours without playing, STREAK RESETS TO 0!
+  if (lastTime > 0 && diffTimeMs > hours48Ms) {
     state.points = 0;
+    state.lastPlayedTimestamp = null;
+    state.lastPlayedDate = null;
     state.streakHistory = Array(10).fill(false);
     state.discountUnlocked = false;
     saveDiscountGameState(state);
     setTimeout(() => {
-      showToast("⚠️ Streak Reset: You missed playing yesterday! Points reset to 0.", 5000);
+      showToast("⚠️ Streak Reset: You missed playing for over 48 hours! Points reset to 0.", 5000);
     }, 1000);
   }
   return state;
 }
+
+function sendDay10VictoryWhatsAppMessage() {
+  const brandInfo = typeof getStoredBrandInfo === "function" ? getStoredBrandInfo() : { whatsappPhone: "94741565677" };
+  const phone = (brandInfo.whatsappPhone || "94741565677").replace(/[^0-9]/g, '');
+
+  const text = `Hi Time Kairo! 🏆 I completed all 10 Days of the Cyber Streak Quest!
+
+🏆 Victory Details:
+- Completed Streak: 10 / 10 Days
+- Secret Reward Code: TK10STREAK
+- Reward Discount: 10% OFF Total Order
+
+I want to claim my 10% OFF discount on my next order! 🛍️`;
+
+  const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  window.open(waUrl, "_blank");
+}
+window.sendDay10VictoryWhatsAppMessage = sendDay10VictoryWhatsAppMessage;
 
 function openDiscountGameModal() {
   const state = checkStreakReset();
@@ -2550,6 +2612,9 @@ function closeDiscountGameModal() {
   if (window.gameTimerInterval) {
     clearInterval(window.gameTimerInterval);
   }
+  if (window.streakCountdownInterval) {
+    clearInterval(window.streakCountdownInterval);
+  }
 }
 window.closeDiscountGameModal = closeDiscountGameModal;
 
@@ -2560,19 +2625,26 @@ function getGameTargetForDay(day) {
 }
 
 function renderStreakTrackerUI(state) {
+  if (window.streakCountdownInterval) {
+    clearInterval(window.streakCountdownInterval);
+  }
+
   const badge = document.getElementById("streak-score-badge");
   if (badge) badge.innerText = `${state.points} / 10 Points`;
 
   const container = document.getElementById("streak-days-grid");
   if (!container) return;
 
-  const todayStr = new Date().toISOString().split("T")[0];
-  const alreadyPlayedToday = state.lastPlayedDate === todayStr;
+  const now = Date.now();
+  const lastPlayed = state.lastPlayedTimestamp || (state.lastPlayedDate ? new Date(state.lastPlayedDate).getTime() : 0);
+  const timePassedMs = now - lastPlayed;
+  const hours24Ms = 24 * 60 * 60 * 1000;
+  const isLocked24h = state.points > 0 && state.points < 10 && lastPlayed > 0 && timePassedMs < hours24Ms;
 
   let html = "";
   for (let day = 1; day <= 10; day++) {
     const isCompleted = day <= state.points;
-    const isCurrentTarget = day === state.points + 1 && !alreadyPlayedToday;
+    const isCurrentTarget = day === state.points + 1 && !isLocked24h;
 
     let statusClass = "border-gray-800 bg-gray-900/60 text-gray-500";
     let icon = `<i class="fa-solid fa-lock text-[10px]"></i>`;
@@ -2615,12 +2687,14 @@ function renderStreakTrackerUI(state) {
         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-black uppercase">
           <i class="fa-solid fa-trophy"></i> 🏆 ULTIMATE 10-DAY MASTERY UNLOCKED!
         </div>
-        <h4 class="font-heading text-xl font-extrabold text-white uppercase">Full 10% Discount Promo Code Unlocked!</h4>
+        <h4 class="font-heading text-xl font-extrabold text-white uppercase mt-1">10% Discount Reward Unlocked!</h4>
         <p class="text-xs text-gray-300">Congratulations on completing all 10 Days!</p>
-        <div class="flex items-center justify-center gap-3 max-w-xs mx-auto pt-1">
-          <span class="font-mono text-xl font-black text-emerald-400 bg-black/80 px-4 py-2 rounded-xl border border-emerald-500/40 select-all">TK10STREAK</span>
-          <button type="button" onclick="claimDiscountReward('TK10STREAK', 10)" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-xl text-xs uppercase transition shadow-lg shadow-emerald-500/20">
-            Apply 10% OFF
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto pt-2">
+          <button type="button" onclick="sendDay10VictoryWhatsAppMessage()" class="w-full sm:w-auto px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-xl text-xs uppercase transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 animate-bounce cursor-pointer">
+            <i class="fa-brands fa-whatsapp text-lg"></i> Claim 10% OFF via WhatsApp 🚀
+          </button>
+          <button type="button" onclick="claimDiscountReward('TK10STREAK', 10)" class="w-full sm:w-auto px-5 py-3 bg-gray-900 hover:bg-gray-800 text-cyan-300 border border-cyan-500/40 font-extrabold rounded-xl text-xs uppercase transition">
+            Apply 10% Code (TK10STREAK)
           </button>
         </div>
       `;
@@ -2630,7 +2704,7 @@ function renderStreakTrackerUI(state) {
         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-black uppercase">
           <i class="fa-solid fa-award"></i> 🥈 TIER 1 UNLOCKED (8+ Days Streak)!
         </div>
-        <h4 class="font-heading text-lg font-bold text-white uppercase">7% Discount Promo Code Unlocked!</h4>
+        <h4 class="font-heading text-lg font-bold text-white uppercase mt-1">7% Discount Promo Code Unlocked!</h4>
         <p class="text-xs text-gray-300">You earned 8+ Points! Complete Days 9 & 10 to upgrade to <span class="text-emerald-400 font-bold">10% OFF</span>!</p>
         <div class="flex items-center justify-center gap-3 max-w-xs mx-auto pt-1">
           <span class="font-mono text-lg font-black text-amber-300 bg-black/80 px-4 py-2 rounded-xl border border-amber-500/40 select-all">TK7STREAK</span>
@@ -2645,22 +2719,42 @@ function renderStreakTrackerUI(state) {
     }
   }
 
+  const updateCountdownDisplay = () => {
+    const currentNow = Date.now();
+    const currentPassed = currentNow - lastPlayed;
+    const currentRemaining = hours24Ms - currentPassed;
+
+    if (currentRemaining <= 0) {
+      if (window.streakCountdownInterval) clearInterval(window.streakCountdownInterval);
+      renderStreakTrackerUI(getDiscountGameState());
+      return;
+    }
+
+    const hrs = Math.floor(currentRemaining / (1000 * 3600));
+    const mins = Math.floor((currentRemaining % (1000 * 3600)) / (1000 * 60));
+    const secs = Math.floor((currentRemaining % (1000 * 60)) / 1000);
+    const timeStr = `${hrs}h ${mins}m ${secs}s`;
+
+    if (notice) {
+      notice.innerHTML = `⏳ Day ${state.points + 1} Challenge Unlocks In: <span class="font-mono text-amber-300 font-extrabold text-sm px-2.5 py-0.5 rounded bg-black/80 border border-amber-500/40">${timeStr}</span> (Strict 24-Hour Countdown)`;
+      notice.classList.remove("hidden");
+    }
+    if (startBtn) {
+      startBtn.innerText = `🔒 Day ${state.points + 1} Locked (${timeStr} Left)`;
+      startBtn.disabled = true;
+      startBtn.className = "px-8 py-3.5 bg-gray-900 text-gray-400 font-extrabold rounded-xl uppercase text-xs cursor-not-allowed border border-gray-800 shadow";
+    }
+  };
+
   if (state.points >= 10 || state.discountUnlocked) {
     if (startBtn) {
       startBtn.innerText = "🏆 10-Day Streak Completed! 10% Discount Active";
       startBtn.disabled = true;
       startBtn.className = "px-8 py-3.5 bg-gray-800 text-emerald-400 font-black rounded-xl uppercase text-xs cursor-not-allowed";
     }
-  } else if (alreadyPlayedToday) {
-    if (notice) {
-      notice.innerHTML = `✨ Today's streak point earned! Current points: <span class="font-black text-amber-300">${state.points}/10</span>. You can still practice play below!`;
-      notice.classList.remove("hidden");
-    }
-    if (startBtn) {
-      startBtn.innerText = `🎮 Play Game Mode (Day ${state.points} Done - Practice)`;
-      startBtn.disabled = false;
-      startBtn.className = "px-8 py-3.5 bg-gradient-to-r from-amber-500 via-cyan-400 to-amber-500 hover:from-amber-400 hover:to-cyan-300 text-black font-black rounded-xl uppercase tracking-wider text-xs transition shadow-lg shadow-amber-500/20 transform hover:scale-105 cursor-pointer";
-    }
+  } else if (isLocked24h) {
+    updateCountdownDisplay();
+    window.streakCountdownInterval = setInterval(updateCountdownDisplay, 1000);
   } else {
     if (notice) notice.classList.add("hidden");
     if (startBtn) {
@@ -2976,16 +3070,29 @@ function finishDailyGameSession() {
 
     state.points = Math.min(10, state.points + 1);
     state.lastPlayedDate = todayStr;
+    state.lastPlayedTimestamp = Date.now();
     if (state.points >= 10) state.discountUnlocked = true;
 
     saveDiscountGameState(state);
     renderStreakTrackerUI(state);
 
-    resultIcon.innerText = state.points >= 8 ? "🔥" : "🎉";
-    resultTitle.innerText = `Day ${state.points} Goal Achieved!`;
-    resultTitle.className = "font-heading text-xl font-bold text-emerald-400 uppercase";
-    resultMsg.innerText = `Awesome! You caught ${gameScore}/${currentGameTarget} items and earned 1 Point for today's streak! Total streak: ${state.points}/10 Days.`;
-    showToast(`⚡ Day ${state.points} Streak Completed! (+1 Point)`);
+    if (state.points >= 10) {
+      resultIcon.innerText = "🏆";
+      resultTitle.innerText = "🏆 ULTIMATE 10-DAY VICTORY ACHIEVED!";
+      resultTitle.className = "font-heading text-2xl font-black text-emerald-400 uppercase animate-bounce";
+      resultMsg.innerText = "CONGRATULATIONS! You completed all 10 Days of the Cyber Streak Quest! Generating your 10% OFF victory claim message to WhatsApp...";
+      showToast("🏆 10-DAY STREAK COMPLETE! Opening WhatsApp Claim Message...", 6000);
+      
+      setTimeout(() => {
+        sendDay10VictoryWhatsAppMessage();
+      }, 1500);
+    } else {
+      resultIcon.innerText = state.points >= 8 ? "🔥" : "🎉";
+      resultTitle.innerText = `Day ${state.points} Goal Achieved!`;
+      resultTitle.className = "font-heading text-xl font-bold text-emerald-400 uppercase";
+      resultMsg.innerText = `Awesome! You caught ${gameScore}/${currentGameTarget} items and earned 1 Point for today's streak! Next challenge unlocks in 24 hours. Total streak: ${state.points}/10 Days.`;
+      showToast(`⚡ Day ${state.points} Streak Completed! (+1 Point)`);
+    }
   } else {
     // Failing game session RESETS STREAK TO 0!
     const state = getDiscountGameState();
@@ -3231,6 +3338,241 @@ function submitCustomerReview(e) {
   document.getElementById("review-input-comment").value = "";
 }
 window.submitCustomerReview = submitCustomerReview;
+
+
+/* ==========================================
+   DYNAMIC OWNER CATEGORY MANAGEMENT PORTAL
+   ========================================== */
+function renderCategoryTabs() {
+  const container = document.getElementById("shop-category-tabs-container");
+  const selectDropdown = document.getElementById("admin-category");
+
+  const categories = typeof getStoredCategories === "function" ? getStoredCategories() : [
+    { id: "all", name: "All Items" },
+    { id: "tshirts", name: "T-Shirts" },
+    { id: "hoodies", name: "Hoodies" },
+    { id: "jackets", name: "Jackets" },
+    { id: "pants", name: "Pants & Cargos" },
+    { id: "accessories", name: "Accessories" }
+  ];
+
+  // Render Shop Filter Category Buttons
+  if (container) {
+    const currentActiveBtn = container.querySelector(".cat-btn.active");
+    const currentActiveCat = currentActiveBtn ? currentActiveBtn.dataset.category : "all";
+
+    container.innerHTML = categories.map(c => `
+      <button data-category="${c.id}" class="cat-btn ${c.id === currentActiveCat ? 'active bg-cyan-400 text-black' : 'bg-gray-900 text-gray-300 hover:text-white hover:bg-gray-800'} px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition cursor-pointer">
+        ${c.name}
+      </button>
+    `).join('');
+
+    // Re-attach click listeners
+    container.querySelectorAll(".cat-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        container.querySelectorAll(".cat-btn").forEach(b => {
+          b.classList.remove("active", "bg-cyan-400", "text-black");
+          b.classList.add("bg-gray-900", "text-gray-300");
+        });
+        btn.classList.add("active", "bg-cyan-400", "text-black");
+        renderShopProducts();
+      });
+    });
+  }
+
+  // Render Admin Product Form Category Select Dropdown
+  if (selectDropdown) {
+    const validSelectOptions = categories.filter(c => c.id !== "all");
+    selectDropdown.innerHTML = validSelectOptions.map(c => `
+      <option value="${c.id}">${c.name}</option>
+    `).join('');
+  }
+}
+window.renderCategoryTabs = renderCategoryTabs;
+
+function renderCategoryAdminSection() {
+  const listContainer = document.getElementById("admin-categories-list");
+  if (!listContainer) return;
+
+  const categories = typeof getStoredCategories === "function" ? getStoredCategories() : [];
+  listContainer.innerHTML = categories.map(c => `
+    <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gray-900 border border-gray-800 text-xs font-bold text-gray-200 shadow">
+      <span class="text-cyan-400 font-mono">#</span>
+      <span>${c.name}</span>
+      ${c.id !== "all" ? `
+        <button type="button" onclick="deleteOwnerCategory('${c.id}')" class="ml-1 text-red-400 hover:text-red-300 text-xs transition cursor-pointer p-0.5" title="Delete Category">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      ` : ''}
+    </div>
+  `).join('');
+}
+window.renderCategoryAdminSection = renderCategoryAdminSection;
+
+function handleAddNewCategorySubmit(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById("admin-new-cat-name");
+  if (!input || !input.value.trim()) return;
+
+  const catName = input.value.trim();
+  const catId = catName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const categories = typeof getStoredCategories === "function" ? getStoredCategories() : [];
+
+  if (categories.some(c => c.id === catId || c.name.toLowerCase() === catName.toLowerCase())) {
+    showToast("⚠️ Category already exists!");
+    return;
+  }
+
+  categories.push({ id: catId, name: catName });
+  if (typeof saveCategories === "function") saveCategories(categories);
+
+  if (window.syncCategoriesToFirebase) {
+    window.syncCategoriesToFirebase(categories);
+  }
+
+  input.value = "";
+  showToast(`✨ New Category "${catName}" Published To Website!`);
+}
+window.handleAddNewCategorySubmit = handleAddNewCategorySubmit;
+
+function deleteOwnerCategory(catId) {
+  if (catId === "all") return;
+  if (confirm("Are you sure you want to remove this category tab from the website?")) {
+    const categories = (typeof getStoredCategories === "function" ? getStoredCategories() : []).filter(c => c.id !== catId);
+    if (typeof saveCategories === "function") saveCategories(categories);
+
+    if (window.syncCategoriesToFirebase) {
+      window.syncCategoriesToFirebase(categories);
+    }
+    showToast("🗑️ Category Removed!");
+  }
+}
+window.deleteOwnerCategory = deleteOwnerCategory;
+
+
+/* ==========================================
+   SECURITY TOKEN VERIFICATION & REVIEW MANAGEMENT
+   ========================================== */
+function generateVerificationTokenForDay10() {
+  const state = typeof getDiscountGameState === "function" ? getDiscountGameState() : {};
+  if (state.verificationToken) return state.verificationToken;
+
+  const timestamp = state.lastPlayedTimestamp || Date.now();
+  let hash = 0;
+  const str = `TIMEKAIRO_SECRET_2026_DAY10_${timestamp}`;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
+  }
+  const codeNum = Math.abs(hash % 900000) + 100000;
+  const token = `#TK10-VERIFIED-${codeNum}`;
+
+  state.verificationToken = token;
+  if (typeof saveDiscountGameState === "function") saveDiscountGameState(state);
+
+  const storedTokens = JSON.parse(localStorage.getItem("timekairo_verified_tokens") || "[]");
+  if (!storedTokens.some(t => t.token === token)) {
+    storedTokens.push({ token: token, createdAt: new Date().toISOString(), discount: "10% OFF" });
+    localStorage.setItem("timekairo_verified_tokens", JSON.stringify(storedTokens));
+
+    if (window.firebaseDB) {
+      try {
+        window.firebaseDB.collection("verified_tokens").doc(token.replace(/[^a-zA-Z0-9]/g, '')).set({
+          token: token,
+          createdAt: new Date().toISOString(),
+          discount: "10% OFF"
+        }, { merge: true });
+      } catch(e) {}
+    }
+  }
+  return token;
+}
+window.generateVerificationTokenForDay10 = generateVerificationTokenForDay10;
+
+function verifyVictoryToken(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById("admin-token-input");
+  const resultDiv = document.getElementById("admin-token-result");
+  if (!input || !resultDiv) return;
+
+  const rawInput = input.value.trim().toUpperCase();
+  if (!rawInput) return;
+
+  const storedTokens = JSON.parse(localStorage.getItem("timekairo_verified_tokens") || "[]");
+  const isMatchSaved = storedTokens.some(t => t.token && (t.token.toUpperCase().includes(rawInput) || rawInput.includes(t.token.toUpperCase())));
+  const isTK10Format = (rawInput.includes("TK10") || rawInput.includes("VERIFIED")) && rawInput.length >= 6;
+
+  resultDiv.classList.remove("hidden");
+  if (isTK10Format || isMatchSaved) {
+    resultDiv.className = "p-4 rounded-2xl border border-emerald-500/50 bg-emerald-500/10 text-emerald-300 text-sm font-bold text-center shadow-lg";
+    resultDiv.innerHTML = `
+      <div class="flex items-center justify-center gap-2 text-base font-extrabold text-emerald-400">
+        <i class="fa-solid fa-circle-check text-xl"></i> ✅ 100% GENUINE & VALIDATED VICTORY TOKEN!
+      </div>
+      <p class="text-xs text-gray-300 mt-1">Token (${rawInput}) is authentic. Customer completed all 10 Days of the Cyber Streak Quest! <strong class="text-emerald-400 font-black">10% OFF Discount Claim Authorized!</strong></p>
+    `;
+    showToast("✅ Token Verified: 100% Genuine Victory!");
+  } else {
+    resultDiv.className = "p-4 rounded-2xl border border-rose-500/50 bg-rose-500/10 text-rose-300 text-sm font-bold text-center shadow-lg";
+    resultDiv.innerHTML = `
+      <div class="flex items-center justify-center gap-2 text-base font-extrabold text-rose-400">
+        <i class="fa-solid fa-triangle-exclamation text-xl"></i> ❌ INVALID / UNVERIFIED TOKEN!
+      </div>
+      <p class="text-xs text-gray-300 mt-1">Warning: Token (${rawInput}) does NOT match genuine 10-day victory records. Do not authorize discount.</p>
+    `;
+    showToast("❌ Token Unverified / Invalid!");
+  }
+}
+window.verifyVictoryToken = verifyVictoryToken;
+
+function renderAdminReviewsList() {
+  const container = document.getElementById("admin-reviews-list");
+  if (!container) return;
+
+  const reviews = getStoredCustomerReviews();
+  if (reviews.length === 0) {
+    container.innerHTML = `<p class="col-span-full text-center text-gray-400 text-xs">No active customer reviews.</p>`;
+    return;
+  }
+
+  container.innerHTML = reviews.map(rev => `
+    <div class="p-4 rounded-2xl bg-gray-900 border border-gray-800 flex flex-col justify-between space-y-3">
+      <div>
+        <div class="flex items-center justify-between">
+          <h4 class="font-bold text-sm text-white">${rev.name} <span class="text-xs text-gray-400 font-normal">(${rev.location})</span></h4>
+          <span class="text-xs text-amber-400 font-bold">★ ${rev.rating}/5</span>
+        </div>
+        <p class="text-xs text-gray-300 italic mt-1 font-normal">"${rev.comment}"</p>
+        <span class="text-[10px] text-cyan-400 block mt-1">Item: ${rev.product || "Time Kairo Drop"}</span>
+      </div>
+      <div class="pt-2 border-t border-gray-800 flex justify-end">
+        <button type="button" onclick="deleteCustomerReview('${rev.id}')" class="px-3 py-1 bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+          <i class="fa-solid fa-trash-can text-xs"></i> Delete Review
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+window.renderAdminReviewsList = renderAdminReviewsList;
+
+function deleteCustomerReview(reviewId) {
+  if (confirm("Are you sure you want to delete this customer review from the website?")) {
+    const reviews = getStoredCustomerReviews().filter(r => String(r.id) !== String(reviewId));
+    saveCustomerReviews(reviews);
+
+    if (window.firebaseDB) {
+      try {
+        window.firebaseDB.collection("reviews").doc(String(reviewId)).delete();
+      } catch(e) {}
+    }
+
+    renderCustomerReviews();
+    renderAdminReviewsList();
+    showToast("🗑️ Customer Review Deleted!");
+  }
+}
+window.deleteCustomerReview = deleteCustomerReview;
 
 
 

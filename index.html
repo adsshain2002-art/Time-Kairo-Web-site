@@ -109,7 +109,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/style.css?v=20260814_v6">
+  <link rel="stylesheet" href="css/style.css?v=20260814_v11">
   <script>
     (function() {
       const theme = localStorage.getItem("timekairo_theme") || "light";
@@ -517,7 +517,7 @@
         </div>
 
         <!-- Category Tabs -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+        <div id="shop-category-tabs-container" class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
           <button data-category="all" class="cat-btn active px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition bg-cyan-400 text-black">All Items</button>
           <button data-category="tshirts" class="cat-btn px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition bg-gray-900 text-gray-300 hover:text-white hover:bg-gray-800">T-Shirts</button>
           <button data-category="hoodies" class="cat-btn px-6 py-2.5 rounded-full text-xs font-extrabold uppercase tracking-wider transition bg-gray-900 text-gray-300 hover:text-white hover:bg-gray-800">Hoodies</button>
@@ -605,42 +605,41 @@
     </section>
 
     <!-- ================= PAGE 3: ABOUT US ================= -->
+    <!-- ================= PAGE 3: ABOUT US ================= -->
     <section id="page-about" class="page-section">
-      <div class="max-w-5xl mx-auto px-4 py-16">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16 w-full overflow-hidden">
         
-        <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
           <span class="text-xs font-extrabold uppercase tracking-widest text-cyan-400">Our Ethos</span>
-          <h2 class="font-heading text-4xl sm:text-6xl font-extrabold text-white uppercase mt-1">ABOUT TIME KAIRO</h2>
+          <h2 class="font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white uppercase mt-1 tracking-tight">ABOUT TIME KAIRO</h2>
           <p id="about-motto" class="font-heading text-xl text-cyan-300 font-bold uppercase tracking-widest mt-2">"WEAR BEYOND TIME"</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 items-center mb-12 sm:mb-16">
           <div class="space-y-6 text-gray-300 text-sm leading-relaxed">
-            <h2 class="font-heading text-2xl font-bold text-white">THE PHILOSOPHY</h2>
-            <div id="about-philosophy-text" class="space-y-4">
+            <h2 class="font-heading text-2xl font-bold text-white uppercase">THE PHILOSOPHY</h2>
+            <div id="about-philosophy-text" class="space-y-4 text-sm sm:text-base">
               <p>Time Kairo was created with a bold vision: to redefine contemporary Sri Lankan streetwear by merging architectural cuts, high-density fabrics, and futuristic aesthetic motifs.</p>
               <p>Our motto — <strong class="text-cyan-300">"Wear Beyond Time"</strong> — signifies garments engineered to transcend temporary trends. Every hoodie, oversized t-shirt, and tactical cargo is crafted with obsessive attention to weight, durability, and fit.</p>
             </div>
-            <div class="pt-4 flex items-center gap-6 border-t border-gray-800">
-              <div>
-                <div id="stat1-val" class="font-heading text-2xl font-black text-white">100%</div>
-                <div id="stat1-lbl" class="text-xs text-gray-400">Premium Quality</div>
+            <div class="pt-6 grid grid-cols-3 gap-2 sm:gap-4 border-t border-gray-800 text-center">
+              <div class="p-2 glass-panel rounded-xl border border-gray-800">
+                <div id="stat1-val" class="font-heading text-xl sm:text-2xl font-black text-white">100%</div>
+                <div id="stat1-lbl" class="text-[11px] sm:text-xs text-gray-400 mt-0.5">Premium Quality</div>
               </div>
-              <div class="w-px h-10 bg-gray-800"></div>
-              <div>
-                <div id="stat2-val" class="font-heading text-2xl font-black text-cyan-400">280+ GSM</div>
-                <div id="stat2-lbl" class="text-xs text-gray-400">Heavyweight Fabric</div>
+              <div class="p-2 glass-panel rounded-xl border border-gray-800">
+                <div id="stat2-val" class="font-heading text-xl sm:text-2xl font-black text-cyan-400">280+ GSM</div>
+                <div id="stat2-lbl" class="text-[11px] sm:text-xs text-gray-400 mt-0.5">Heavy Fabric</div>
               </div>
-              <div class="w-px h-10 bg-gray-800"></div>
-              <div>
-                <div id="stat3-val" class="font-heading text-2xl font-black text-amber-400">Islandwide</div>
-                <div id="stat3-lbl" class="text-xs text-gray-400">Fast Shipping</div>
+              <div class="p-2 glass-panel rounded-xl border border-gray-800">
+                <div id="stat3-val" class="font-heading text-xl sm:text-2xl font-black text-amber-400">Islandwide</div>
+                <div id="stat3-lbl" class="text-[11px] sm:text-xs text-gray-400 mt-0.5">Fast Shipping</div>
               </div>
             </div>
           </div>
 
-          <div class="relative rounded-3xl overflow-hidden glass-panel border border-cyan-500/30 p-2">
-            <img id="about-img" src="images/hero.jpg" alt="Time Kairo clothing brand Sri Lanka team and fashion story" class="w-full h-96 object-cover rounded-2xl">
+          <div class="relative rounded-3xl overflow-hidden glass-panel border border-cyan-500/30 p-2 w-full">
+            <img id="about-img" src="images/hero.jpg" alt="Time Kairo clothing brand Sri Lanka team and fashion story" class="w-full h-64 sm:h-80 md:h-96 object-cover rounded-2xl">
           </div>
         </div>
 
@@ -760,7 +759,7 @@
 
           <form onsubmit="verifyTrackPassword(event)" class="w-full space-y-3">
             <div class="relative">
-              <input type="password" id="track-passcode-input" maxlength="12" placeholder="Enter Passcode (2002)..." class="w-full px-4 py-3 bg-gray-900/90 border border-amber-500/50 rounded-xl text-center text-lg font-mono tracking-widest text-amber-300 placeholder-gray-600 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition">
+              <input type="password" id="track-passcode-input" maxlength="12" placeholder="Enter Security Passcode..." class="w-full px-4 py-3 bg-gray-900/90 border border-amber-500/50 rounded-xl text-center text-lg font-mono tracking-widest text-amber-300 placeholder-gray-600 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition">
             </div>
             <div id="track-passcode-error" class="text-xs text-rose-400 font-bold hidden flex items-center justify-center gap-1">
               <i class="fa-solid fa-circle-exclamation"></i> Incorrect Passcode! Try again.
@@ -1390,6 +1389,64 @@
           </form>
         </div>
 
+        <!-- Owner Victory Token Verifier Tool -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-emerald-500/30 mb-12 shadow-xl shadow-emerald-500/10">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-800">
+            <h2 class="font-heading text-xl font-extrabold text-white uppercase tracking-tight flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-emerald-400"></i> Owner 10-Day Victory Token Verifier
+            </h2>
+            <span class="text-xs font-mono text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">Security Validation</span>
+          </div>
+          <p class="text-xs text-gray-300 mb-4">Paste the Security Token received from WhatsApp message (e.g. <span class="font-mono text-emerald-300 font-bold">#TK10-VERIFIED-849201</span>) to verify if the customer truly completed the 10-day streak challenge.</p>
+
+          <form onsubmit="verifyVictoryToken(event)" class="flex flex-col sm:flex-row gap-3 mb-4">
+            <input type="text" id="admin-token-input" required placeholder="Paste Security Token (e.g. #TK10-VERIFIED-849201)..." class="flex-grow bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm font-mono text-emerald-300 focus:border-emerald-400 focus:outline-none">
+            <button type="submit" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-xl uppercase tracking-wider text-xs transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-check-double text-sm"></i> Verify Token Authenticity
+            </button>
+          </form>
+
+          <div id="admin-token-result" class="hidden p-4 rounded-2xl border text-sm font-bold text-center"></div>
+        </div>
+
+        <!-- Owner Customer Feedback & Reviews Manager -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/30 mb-12 shadow-xl shadow-amber-500/10">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-800">
+            <h2 class="font-heading text-xl font-extrabold text-white uppercase tracking-tight flex items-center gap-2">
+              <i class="fa-solid fa-comments text-amber-400"></i> Manage Customer Reviews & Feedback
+            </h2>
+            <span class="text-xs font-mono text-amber-400 font-bold bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">Owner Control</span>
+          </div>
+
+          <div id="admin-reviews-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Populated dynamically by renderAdminReviewsList() -->
+          </div>
+        </div>
+
+        <!-- Dynamic Category Management Portal (For Owner) -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/30 mb-12 shadow-xl shadow-cyan-500/10">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-800">
+            <h2 class="font-heading text-xl font-extrabold text-white uppercase tracking-tight flex items-center gap-2">
+              <i class="fa-solid fa-tags text-cyan-400"></i> Manage Website Category Tabs
+            </h2>
+            <span class="text-xs font-mono text-cyan-400 font-bold bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/30">Owner Control</span>
+          </div>
+
+          <form onsubmit="handleAddNewCategorySubmit(event)" class="flex flex-col sm:flex-row gap-3 mb-6">
+            <input type="text" id="admin-new-cat-name" required placeholder="Enter New Category Name (e.g. Sweatshirts, Caps, Accessories...)" class="flex-grow bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            <button type="submit" class="px-6 py-3 bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold rounded-xl uppercase tracking-wider text-xs transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-plus text-sm"></i> Add New Category Tab
+            </button>
+          </form>
+
+          <div>
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Active Website Categories:</div>
+            <div id="admin-categories-list" class="flex flex-wrap gap-2.5">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
         <!-- Add New Product Form -->
         <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-gray-800 mb-12">
           <h2 class="font-heading text-xl font-bold text-white mb-6 flex items-center gap-2">
@@ -1503,7 +1560,7 @@
       <form onsubmit="submitAdminPin(event)" class="space-y-4">
         <div>
           <label for="admin-pin-input" class="block text-xs font-extrabold text-amber-400 uppercase tracking-wider mb-2 text-center">Owner Security PIN</label>
-          <input type="password" id="admin-pin-input" maxlength="10" placeholder="Enter PIN (e.g. 986964)..." required class="w-full px-4 py-3 bg-gray-900 border border-amber-500/40 rounded-xl text-center text-xl font-mono tracking-widest text-amber-300 placeholder-gray-600 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition">
+          <input type="password" id="admin-pin-input" maxlength="10" placeholder="Enter Owner Security PIN..." required class="w-full px-4 py-3 bg-gray-900 border border-amber-500/40 rounded-xl text-center text-xl font-mono tracking-widest text-amber-300 placeholder-gray-600 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition">
         </div>
         <div id="admin-pin-error" class="text-xs text-rose-400 font-bold hidden text-center flex items-center justify-center gap-1">
           <i class="fa-solid fa-circle-exclamation"></i> Incorrect Owner PIN Code! Try again.
@@ -1648,7 +1705,7 @@
 
           <form onsubmit="verifyGamePassword(event)" class="w-full max-w-xs space-y-3">
             <div class="relative">
-              <input type="password" id="game-passcode-input" maxlength="12" placeholder="Enter Password (159159)..." class="w-full px-4 py-3 bg-gray-900/90 border border-amber-500/50 rounded-xl text-center text-lg font-mono tracking-widest text-amber-300 placeholder-gray-600 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition">
+              <input type="password" id="game-passcode-input" maxlength="12" placeholder="Enter Quest Passcode..." class="w-full px-4 py-3 bg-gray-900/90 border border-amber-500/50 rounded-xl text-center text-lg font-mono tracking-widest text-amber-300 placeholder-gray-600 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition">
             </div>
             <div id="game-passcode-error" class="text-xs text-rose-400 font-bold hidden flex items-center justify-center gap-1">
               <i class="fa-solid fa-circle-exclamation"></i> Incorrect Password! Try again.
@@ -1913,10 +1970,10 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
   <!-- Scripts -->
-  <script src="js/firebase-config.js?v=20260814_v6"></script>
-  <script src="js/products.js?v=20260814_v6"></script>
-  <script src="js/api-sync.js?v=20260814_v6"></script>
-  <script src="js/app.js?v=20260814_v6"></script>
+  <script src="js/firebase-config.js?v=20260814_v11"></script>
+  <script src="js/products.js?v=20260814_v11"></script>
+  <script src="js/api-sync.js?v=20260814_v11"></script>
+  <script src="js/app.js?v=20260814_v11"></script>
 
   <!-- Realtime Live Listener -->
   <script>
@@ -2014,6 +2071,20 @@
             else image = "images/tee.jpg";
           }
 
+          let imgList = [];
+          if (Array.isArray(data.images)) {
+            imgList = data.images.filter(i => typeof i === 'string' && i.trim());
+          } else if (typeof data.images === 'string') {
+            imgList = data.images.split(',').map(i => i.trim()).filter(Boolean);
+          }
+          if (imgList.length === 0 && Array.isArray(data.photoList)) {
+            imgList = data.photoList.filter(i => typeof i === 'string' && i.trim());
+          }
+          if (imgList.length === 0) {
+            imgList = [image];
+          }
+          imgList = imgList.slice(0, 5);
+
           const prodId = data.id || defaultId || "tk-app-" + Math.random().toString(36).substr(2, 6);
 
           return {
@@ -2022,7 +2093,8 @@
             category: category,
             price: price,
             originalPrice: origPrice,
-            image: image,
+            image: imgList[0] || image,
+            images: imgList,
             description: String(data.description || data.desc || data.details || data.info || data.about || "Wear Beyond Time — Premium luxury streetwear."),
             sizes: Array.isArray(data.sizes) ? data.sizes : (typeof data.sizes === 'string' ? data.sizes.split(',').map(s => s.trim()) : (Array.isArray(data.sizeList) ? data.sizeList : ["S", "M", "L", "XL"])),
             colors: Array.isArray(data.colors) ? data.colors : (typeof data.colors === 'string' ? data.colors.split(',').map(c => c.trim()) : (Array.isArray(data.colorList) ? data.colorList : ["Standard"])),
@@ -2128,11 +2200,15 @@
             });
           }
 
-          saveProducts(finalProducts);
-          products = finalProducts;
-          if (typeof renderHomeProducts === 'function') renderHomeProducts();
-          if (typeof renderShopProducts === 'function') renderShopProducts();
-          if (typeof renderAdminProductTable === 'function') renderAdminProductTable();
+          // Only re-render if product data has actually changed (prevents webpage jitter/shaking)
+          const currentStored = typeof getStoredProducts === 'function' ? getStoredProducts() : [];
+          if (JSON.stringify(currentStored) !== JSON.stringify(finalProducts)) {
+            saveProducts(finalProducts);
+            products = finalProducts;
+            if (typeof renderHomeProducts === 'function') renderHomeProducts();
+            if (typeof renderShopProducts === 'function') renderShopProducts();
+            if (typeof renderAdminProductTable === 'function') renderAdminProductTable();
+          }
           updateSyncBadge('connected', `🔥 Firebase Connected (${finalProducts.length} Products Active)`);
         };
 

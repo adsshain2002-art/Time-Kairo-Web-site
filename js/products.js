@@ -258,6 +258,37 @@ function saveProducts(products) {
 }
 
 
+// Dynamic Category Default Data & Storage Manager
+const DEFAULT_CATEGORIES = [
+  { id: "all", name: "All Items" },
+  { id: "tshirts", name: "T-Shirts" },
+  { id: "hoodies", name: "Hoodies" },
+  { id: "jackets", name: "Jackets" },
+  { id: "pants", name: "Pants & Cargos" },
+  { id: "accessories", name: "Accessories" }
+];
+
+function getStoredCategories() {
+  const saved = localStorage.getItem("timekairo_categories");
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch (e) {
+      console.error("Failed to parse categories", e);
+    }
+  }
+  return DEFAULT_CATEGORIES;
+}
+
+function saveCategories(cats) {
+  if (!Array.isArray(cats) || cats.length === 0) return;
+  localStorage.setItem("timekairo_categories", JSON.stringify(cats));
+  if (typeof renderCategoryTabs === "function") renderCategoryTabs();
+  if (typeof renderCategoryAdminSection === "function") renderCategoryAdminSection();
+}
+
+
 // Brand Information Default Data & Storage Manager
 const DEFAULT_BRAND_INFO = {
   phone: "0741565677",
