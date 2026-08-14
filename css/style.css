@@ -199,3 +199,819 @@ h1, h2, h3, h4, .font-heading {
   box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
 }
 
+/* ==========================================
+   CUSTOM T-SHIRT STUDIO CANVAS & STYLING
+   ========================================== */
+.studio-canvas-box {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 480px;
+  margin: 0 auto;
+  border-radius: 1.5rem;
+  background: radial-gradient(circle at 50% 40%, rgba(30, 30, 42, 0.9) 0%, rgba(10, 10, 14, 0.98) 75%);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(0, 242, 254, 0.05);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.studio-tshirt-svg {
+  width: 320px;
+  height: 380px;
+  transition: fill 0.3s ease, filter 0.3s ease;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.5));
+}
+
+.studio-printable-area {
+  position: absolute;
+  top: 24%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 170px;
+  height: 210px;
+  border: 1px dashed rgba(0, 242, 254, 0.4);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.studio-printable-area.back-area {
+  top: 22%;
+  width: 190px;
+  height: 230px;
+}
+
+.studio-printable-area.pocket-area {
+  top: 26%;
+  left: 36%;
+  transform: none;
+  width: 70px;
+  height: 70px;
+}
+
+.studio-printable-area.sleeve-area {
+  top: 28%;
+  left: 20%;
+  transform: none;
+  width: 60px;
+  height: 60px;
+}
+
+.studio-artwork-img {
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  transition: transform 0.2s ease;
+  pointer-events: auto;
+}
+
+.studio-custom-text {
+  font-weight: 800;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  pointer-events: auto;
+  max-width: 90%;
+}
+
+.color-swatch-ring {
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.color-swatch-ring.active {
+  border-color: #00f2fe;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.8);
+  transform: scale(1.1);
+}
+
+/* 3D Realistic Viewport & Apparel Lighting Effects */
+.studio-3d-box {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.studio-3d-box.mode-3d {
+  transform: rotateY(-12deg) rotateX(6deg) scale(0.96);
+  box-shadow: 
+    -20px 30px 60px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(0, 242, 254, 0.2);
+}
+
+.studio-3d-box.mode-3d:hover {
+  transform: rotateY(-4deg) rotateX(2deg) scale(1.01);
+}
+
+.fabric-texture-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+  background-size: 4px 4px;
+  opacity: 0.25;
+  mix-blend-mode: overlay;
+  z-index: 5;
+}
+
+.fabric-shadow-lighting {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%);
+  mix-blend-mode: multiply;
+  z-index: 6;
+  border-radius: 1.5rem;
+}
+
+/* Drag to reposition artwork cursor */
+.studio-artwork-img.draggable {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.studio-artwork-img.dragging {
+  cursor: grabbing;
+}
+
+/* ANTI-SCREENSHOT & DOWNLOAD PROTECTION STYLES */
+.protected-canvas-box {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.protected-canvas-box img,
+.protected-canvas-box svg {
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  pointer-events: auto;
+}
+
+.studio-watermark-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.studio-watermark-text {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(0, 242, 254, 0.18);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  transform: rotate(-30deg);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.1);
+}
+
+/* Hide content when printing or saving as PDF */
+@media print {
+  body {
+    display: none !important;
+  }
+}
+
+/* Shake Animation for Passcode Input Feedback */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* ==========================================
+   LIQUID GLASS DESIGN SYSTEM (DARK & LIGHT THEMES)
+   ========================================== */
+
+/* Ambient Floating Liquid Spheres Behind Layout */
+.liquid-ambient-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.liquid-sphere-1 {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.35) 0%, rgba(0, 242, 254, 0) 70%);
+  filter: blur(65px);
+  animation: floatSphere1 14s ease-in-out infinite alternate;
+}
+
+.liquid-sphere-2 {
+  position: absolute;
+  top: 45%;
+  left: -5%;
+  width: 650px;
+  height: 650px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(230, 200, 117, 0.3) 0%, rgba(230, 200, 117, 0) 70%);
+  filter: blur(75px);
+  animation: floatSphere2 18s ease-in-out infinite alternate;
+}
+
+.liquid-sphere-3 {
+  position: absolute;
+  top: 72%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(168, 85, 247, 0) 70%);
+  filter: blur(70px);
+  animation: floatSphere3 16s ease-in-out infinite alternate;
+}
+
+.liquid-sphere-4 {
+  position: absolute;
+  top: 25%;
+  left: 35%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.32) 0%, rgba(14, 165, 233, 0) 70%);
+  filter: blur(60px);
+  animation: floatSphere4 13s ease-in-out infinite alternate;
+}
+
+@keyframes floatSphere1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-100px, 120px) scale(1.2); }
+}
+
+@keyframes floatSphere2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(120px, -110px) scale(1.15); }
+}
+
+@keyframes floatSphere3 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-110px, -80px) scale(1.18); }
+}
+
+@keyframes floatSphere4 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(90px, 90px) scale(1.22); }
+}
+
+/* Liquid Glass Core Cards & Panels */
+.liquid-glass-card,
+.glass-panel {
+  position: relative;
+  background: rgba(18, 18, 28, 0.55);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s ease,
+              background-color 0.35s ease;
+}
+
+.liquid-glass-card:hover {
+  border-color: rgba(0, 242, 254, 0.6);
+  box-shadow: 
+    0 25px 60px rgba(0, 242, 254, 0.25),
+    inset 0 1px 3px rgba(255, 255, 255, 0.4);
+}
+
+/* Liquid Glass Section Container */
+.liquid-section-container {
+  background: rgba(10, 10, 18, 0.45);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Liquid Glass Navigation Bar */
+.liquid-glass-nav,
+.glass-nav {
+  background: rgba(10, 10, 16, 0.75);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+}
+
+/* Transitions across elements */
+body, header, nav, div, section, article, button, input, select, textarea, span, h1, h2, h3, h4, h5, h6 {
+  transition: background-color 0.35s ease, 
+              color 0.35s ease, 
+              border-color 0.35s ease, 
+              box-shadow 0.35s ease;
+}
+
+/* ==========================================
+   HIGH-FASHION LUXURY LIGHT THEME LIQUID GLASS SYSTEM
+   ========================================== */
+html.light-theme body,
+body.light-theme {
+  background: radial-gradient(circle at 50% 0%, #ffffff 0%, #f8fafc 55%, #f1f5f9 100%) !important;
+  background-attachment: fixed !important;
+  color: #0f172a !important;
+}
+
+/* Ambient Spheres in Light Theme */
+body.light-theme .liquid-sphere-1 {
+  background: radial-gradient(circle, rgba(2, 132, 199, 0.22) 0%, rgba(2, 132, 199, 0) 70%) !important;
+}
+
+body.light-theme .liquid-sphere-2 {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0) 75%) !important;
+}
+
+body.light-theme .liquid-sphere-3 {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, rgba(168, 85, 247, 0) 70%) !important;
+}
+
+body.light-theme .liquid-sphere-4 {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%) !important;
+}
+
+/* LIQUID GLASS CARDS & PANELS IN LIGHT THEME */
+body.light-theme .liquid-glass-card,
+body.light-theme .glass-panel {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 
+    0 18px 40px rgba(15, 23, 42, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 1) !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .liquid-glass-card:hover {
+  border-color: rgba(2, 132, 199, 0.5) !important;
+  box-shadow: 
+    0 25px 50px rgba(2, 132, 199, 0.18),
+    inset 0 1px 3px rgba(255, 255, 255, 1) !important;
+}
+
+/* LIQUID SECTION CONTAINER IN LIGHT THEME */
+body.light-theme .liquid-section-container {
+  background: rgba(248, 250, 252, 0.55) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.08) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+
+/* PRODUCT CARDS & ITEM STYLING IN LIGHT THEME */
+body.light-theme .product-card-item,
+body.light-theme article.glass-panel,
+body.light-theme .group.relative.glass-panel {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.07) !important;
+}
+
+body.light-theme .product-card-item:hover,
+body.light-theme article.glass-panel:hover,
+body.light-theme .group.relative.glass-panel:hover {
+  border-color: rgba(2, 132, 199, 0.55) !important;
+  box-shadow: 0 22px 45px rgba(2, 132, 199, 0.16) !important;
+}
+
+body.light-theme .product-card-body {
+  background-color: transparent !important;
+}
+
+body.light-theme .product-card-footer {
+  background-color: transparent !important;
+  border-top-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+body.light-theme .product-img-box {
+  background-color: #f1f5f9 !important;
+}
+
+body.light-theme .p-cat-tag {
+  color: #0284c7 !important;
+}
+
+body.light-theme .p-title,
+body.light-theme .product-card-item h3 {
+  color: #0f172a !important;
+}
+
+body.light-theme .p-desc,
+body.light-theme .product-card-item p {
+  color: #64748b !important;
+}
+
+body.light-theme .p-price,
+body.light-theme .product-card-item .text-xl {
+  color: #0284c7 !important;
+  font-weight: 900 !important;
+}
+
+body.light-theme .p-orig-price {
+  color: #94a3b8 !important;
+}
+
+body.light-theme .p-buy-btn {
+  color: #0284c7 !important;
+}
+body.light-theme .p-buy-btn:hover {
+  color: #0369a1 !important;
+}
+
+/* HERO SECTION IN LIGHT THEME */
+body.light-theme #page-home .relative .absolute.inset-0 .bg-gradient-to-t {
+  background: linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0.3) 40%, transparent 100%) !important;
+}
+
+body.light-theme #page-home .relative .absolute.inset-0 .bg-gradient-to-r {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.25) 0%, transparent 50%, rgba(255, 255, 255, 0.25) 100%) !important;
+}
+
+body.light-theme #page-home .relative > .absolute.inset-0 > img {
+  opacity: 1 !important;
+  filter: contrast(110%) brightness(102%) !important;
+}
+
+/* CATEGORY SHOWCASE CARDS */
+body.light-theme .group.relative.glass-panel.overflow-hidden {
+  background: #0f172a !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12) !important;
+}
+
+/* ==========================================
+   LIGHT THEME 100% HIGH-CONTRAST TYPOGRAPHY SYSTEM
+   ========================================== */
+
+/* General Body & Element Defaults */
+body.light-theme,
+body.light-theme p,
+body.light-theme span:not(.no-light-override),
+body.light-theme div:not(.no-light-override),
+body.light-theme label,
+body.light-theme li,
+body.light-theme td,
+body.light-theme th {
+  color: #0f172a;
+}
+
+/* Headings in Light Theme */
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3,
+body.light-theme h4,
+body.light-theme h5,
+body.light-theme h6,
+body.light-theme .font-heading {
+  color: #0f172a !important;
+}
+
+/* Tailwind Text Color Class Overrides for Light Theme */
+body.light-theme .text-white,
+body.light-theme .text-gray-100,
+body.light-theme .text-gray-50,
+body.light-theme .text-slate-100,
+body.light-theme .text-slate-200 {
+  color: #0f172a !important;
+}
+
+body.light-theme .text-gray-200,
+body.light-theme .text-gray-300,
+body.light-theme .text-slate-300 {
+  color: #1e293b !important;
+}
+
+body.light-theme .text-gray-400,
+body.light-theme .text-slate-400,
+body.light-theme .text-gray-500 {
+  color: #475569 !important;
+}
+
+/* Cyan Accents in Light Theme (High Contrast Blue/Cyan) */
+body.light-theme .text-cyan-400,
+body.light-theme .text-cyan-500 {
+  color: #0284c7 !important;
+}
+
+body.light-theme .text-cyan-300,
+body.light-theme .text-cyan-200,
+body.light-theme .text-cyan-100 {
+  color: #0369a1 !important;
+}
+
+/* Amber Accents in Light Theme (High Contrast Dark Amber/Bronze) */
+body.light-theme .text-amber-400,
+body.light-theme .text-amber-500 {
+  color: #d97706 !important;
+}
+
+body.light-theme .text-amber-300,
+body.light-theme .text-amber-200 {
+  color: #b45309 !important;
+}
+
+/* Emerald Accents in Light Theme (High Contrast Dark Emerald) */
+body.light-theme .text-emerald-400,
+body.light-theme .text-emerald-500 {
+  color: #059669 !important;
+}
+
+body.light-theme .text-emerald-300,
+body.light-theme .text-emerald-200 {
+  color: #047857 !important;
+}
+
+/* Preserving Dark Badges */
+body.light-theme .text-black {
+  color: #000000 !important;
+}
+
+body.light-theme .bg-amber-400.text-black,
+body.light-theme .bg-cyan-400.text-black,
+body.light-theme .bg-cyan-500.text-black {
+  color: #000000 !important;
+  font-weight: 900 !important;
+}
+
+/* Input Fields, Textareas, Selects & Placeholders in Light Theme */
+body.light-theme input,
+body.light-theme select,
+body.light-theme textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme input::placeholder,
+body.light-theme textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+body.light-theme select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Ticker Bar in Light Theme */
+body.light-theme .ticker-wrap,
+body.light-theme .ticker-wrap span {
+  color: #0369a1 !important;
+}
+
+/* Category Filter Buttons in Light Theme */
+body.light-theme .cat-btn {
+  background-color: #e2e8f0 !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body.light-theme .cat-btn.active {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25) !important;
+}
+
+body.light-theme .cat-btn:hover:not(.active) {
+  background-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Size and Color Selector Buttons in QuickView Modal & Studio */
+body.light-theme .size-btn,
+body.light-theme .color-btn {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .size-btn.border-cyan-400,
+body.light-theme .color-btn.border-cyan-400 {
+  background-color: rgba(2, 132, 199, 0.12) !important;
+  color: #0284c7 !important;
+  border-color: #0284c7 !important;
+}
+
+/* Track Order Timeline Stepper in Light Theme */
+body.light-theme .tracking-step-dot {
+  background: #e2e8f0 !important;
+  color: #64748b !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .tracking-step-dot.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+}
+
+body.light-theme .tracking-step-dot.completed {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border-color: #10b981 !important;
+}
+
+/* Admin Dashboard Tables & Cards in Light Theme */
+body.light-theme table th {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme table td {
+  color: #0f172a !important;
+  border-color: #f1f5f9 !important;
+}
+
+/* FOOTER SECTION IN LIGHT THEME */
+body.light-theme footer {
+  background-color: #f1f5f9 !important;
+  border-top: 1px solid #cbd5e1 !important;
+}
+
+body.light-theme footer .text-white {
+  color: #0f172a !important;
+}
+
+body.light-theme footer .text-gray-400 {
+  color: #475569 !important;
+}
+
+body.light-theme ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+body.light-theme ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+/* HEADER & MOBILE NAV DRAWER IN LIGHT THEME */
+body.light-theme header {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-bottom-color: rgba(203, 213, 225, 0.8) !important;
+}
+
+body.light-theme #mobile-menu {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-top-color: rgba(203, 213, 225, 0.8) !important;
+}
+
+body.light-theme #mobile-menu button {
+  color: #1e293b !important;
+}
+
+body.light-theme #mobile-menu button:hover {
+  background-color: #f1f5f9 !important;
+}
+
+body.light-theme .bg-brandDark {
+  background-color: #ffffff !important;
+}
+
+body.light-theme .bg-gray-900 {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .bg-gray-950 {
+  background-color: #f1f5f9 !important;
+}
+
+/* COMPREHENSIVE LIGHT THEME OVERRIDES FOR MOBILE & DESKTOP */
+body.light-theme [class*="bg-brandDark"]:not(#game-play-area):not(#discount-game-canvas),
+body.light-theme [class*="bg-gray-900"]:not(#game-play-area):not(#discount-game-canvas),
+body.light-theme [class*="bg-gray-950"]:not(#game-play-area):not(#discount-game-canvas),
+body.light-theme [class*="bg-slate-950"]:not(#game-play-area):not(#discount-game-canvas),
+body.light-theme [class*="bg-black"]:not(#game-play-area):not(#discount-game-canvas),
+body.light-theme .glass-panel:not(#game-play-area),
+body.light-theme article.glass-panel:not(#game-play-area) {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
+}
+
+body.light-theme input:not(#game-passcode-input):not(#admin-pin-input),
+body.light-theme textarea,
+body.light-theme select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .text-white:not(#game-play-area *):not(#admin-login-modal *),
+body.light-theme .text-gray-100:not(#game-play-area *),
+body.light-theme .text-gray-200:not(#game-play-area *),
+body.light-theme .text-gray-300:not(#game-play-area *) {
+  color: #0f172a !important;
+}
+
+body.light-theme .text-gray-400:not(#game-play-area *),
+body.light-theme .text-gray-500:not(#game-play-area *) {
+  color: #475569 !important;
+}
+
+/* GAME CANVAS & PLAY AREA ISOLATION IN LIGHT THEME */
+body.light-theme #game-play-area,
+body.light-theme #discount-game-canvas {
+  background-color: #090d16 !important;
+  border-color: rgba(6, 182, 212, 0.5) !important;
+  color: #ffffff !important;
+}
+
+body.light-theme #game-play-area .text-white,
+body.light-theme #game-play-area h4,
+body.light-theme #game-play-area p {
+  color: #ffffff !important;
+}
+
+body.light-theme #game-play-area .text-gray-400,
+body.light-theme #game-play-area .text-gray-300 {
+  color: #94a3b8 !important;
+}
+
+body.light-theme #game-passcode-input,
+body.light-theme #admin-pin-input {
+  background-color: rgba(17, 24, 39, 0.95) !important;
+  color: #fcd34d !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+}
+
+/* MOBILE GALLERY & MODAL LIGHT THEME FIXES */
+body.light-theme #quickview-content {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme #quickview-main-container {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme .qv-thumb-btn.border-gray-800 {
+  border-color: #cbd5e1 !important;
+}
+
+/* UTILITIES & MOBILE TOUCH FIXES */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+button, a, input, select, textarea, .product-card-item {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+
+
+

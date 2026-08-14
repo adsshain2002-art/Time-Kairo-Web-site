@@ -11,6 +11,7 @@ const DEFAULT_PRODUCTS = [
     price: 4800,
     originalPrice: 5500,
     image: "images/tee.jpg",
+    images: ["images/tee.jpg", "images/hero.jpg", "images/hoodie.jpg", "images/jacket.jpg", "images/cargo.jpg"],
     description: "Premium 280GSM heavy cotton oversized fit T-shirt featuring futuristic back print with signature 'Wear Beyond Time' motif. Breathable, durable, and designed for ultimate urban street aesthetic.",
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: ["Black", "Cyber Cyan"],
@@ -25,6 +26,7 @@ const DEFAULT_PRODUCTS = [
     price: 8900,
     originalPrice: 9800,
     image: "images/hoodie.jpg",
+    images: ["images/hoodie.jpg", "images/hero.jpg", "images/tee.jpg", "images/jacket.jpg", "images/cargo.jpg"],
     description: "Ultra-heavyweight 450GSM French Terry fleece hoodie. Designed with custom metallic zipper hardware, sleeve logo accents, and relaxed dropped shoulder silhouette.",
     sizes: ["M", "L", "XL"],
     colors: ["Obsidian Black", "Gold Line"],
@@ -39,6 +41,7 @@ const DEFAULT_PRODUCTS = [
     price: 14500,
     originalPrice: 16500,
     image: "images/jacket.jpg",
+    images: ["images/jacket.jpg", "images/hero.jpg", "images/cargo.jpg", "images/tee.jpg", "images/hoodie.jpg"],
     description: "Architectural bomber jacket crafted from weather-resistant tech nylon. Features custom gold hardware trims, utility arm pocket, and satin inner lining with Time Kairo monogram.",
     sizes: ["S", "M", "L", "XL"],
     colors: ["Midnight Black", "Stealth Grey"],
@@ -53,6 +56,7 @@ const DEFAULT_PRODUCTS = [
     price: 7900,
     originalPrice: 8500,
     image: "images/cargo.jpg",
+    images: ["images/cargo.jpg", "images/hero.jpg", "images/jacket.jpg", "images/tee.jpg", "images/hoodie.jpg"],
     description: "Heavy-duty ripstop cargo trousers with 6 ergonomic utility pockets, adjustable ankle strap pullers, and reinforced stitching for daily urban movement.",
     sizes: ["30", "32", "34", "36"],
     colors: ["Tactical Black"],
@@ -67,6 +71,7 @@ const DEFAULT_PRODUCTS = [
     price: 9200,
     originalPrice: 10500,
     image: "images/hoodie.jpg",
+    images: ["images/hoodie.jpg", "images/hero.jpg", "images/tee.jpg", "images/cargo.jpg", "images/jacket.jpg"],
     description: "Limited edition minimal black hoodie with chest embroidery 'Time Kairo • Wear Beyond Time'. Premium finish with plush fleece interior.",
     sizes: ["S", "M", "L", "XL"],
     colors: ["Charcoal Black"],
@@ -81,6 +86,7 @@ const DEFAULT_PRODUCTS = [
     price: 4500,
     originalPrice: 5000,
     image: "images/tee.jpg",
+    images: ["images/tee.jpg", "images/hero.jpg", "images/jacket.jpg", "images/hoodie.jpg", "images/cargo.jpg"],
     description: "Cyberpunk aesthetic oversized graphic shirt with high-density print logo and boxy cut silhouette.",
     sizes: ["M", "L", "XL", "XXL"],
     colors: ["Neon Black"],
@@ -122,26 +128,41 @@ function addDeletedProduct(productOrId) {
   let name = null;
 
   if (typeof productOrId === "object") {
-    id = productOrId.id;
-    name = productOrId.name;
+    id = productOrId.id ? String(productOrId.id).trim() : null;
+    name = productOrId.name ? String(productOrId.name).trim() : null;
   } else {
-    id = productOrId;
+    const refStr = String(productOrId).trim();
+    id = refStr;
+
+    // Look up product in stored products before it's cleared
     const saved = localStorage.getItem("timekairo_products");
     if (saved) {
       try {
         const stored = JSON.parse(saved);
         if (Array.isArray(stored)) {
-          const found = stored.find(p => p && String(p.id) === String(id));
-          if (found) name = found.name;
+          const found = stored.find(p => p && (String(p.id) === refStr || (p.name && p.name.toLowerCase().trim() === refStr.toLowerCase())));
+          if (found) {
+            id = found.id ? String(found.id).trim() : id;
+            name = found.name;
+          }
         }
       } catch (e) {}
+    }
+
+    // Look up in DEFAULT_PRODUCTS as fallback
+    if (typeof DEFAULT_PRODUCTS !== "undefined") {
+      const defFound = DEFAULT_PRODUCTS.find(p => p && (String(p.id) === refStr || (p.name && p.name.toLowerCase().trim() === refStr.toLowerCase())));
+      if (defFound) {
+        id = defFound.id ? String(defFound.id).trim() : id;
+        if (!name) name = defFound.name;
+      }
     }
   }
 
   if (id) {
     const deletedIds = getDeletedProductIds();
-    const idStr = String(id);
-    if (!deletedIds.includes(idStr)) {
+    const idStr = String(id).trim();
+    if (idStr && !deletedIds.includes(idStr)) {
       deletedIds.push(idStr);
       localStorage.setItem("timekairo_deleted_ids", JSON.stringify(deletedIds));
     }
@@ -157,6 +178,23 @@ function addDeletedProduct(productOrId) {
   }
 }
 
+function removeDeletedProduct(productOrId) {
+  if (!productOrId) return;
+  let id = typeof productOrId === "object" ? productOrId.id : String(productOrId);
+  let name = typeof productOrId === "object" ? productOrId.name : null;
+
+  if (id) {
+    const idStr = String(id).trim();
+    const deletedIds = getDeletedProductIds().filter(i => String(i).trim() !== idStr);
+    localStorage.setItem("timekairo_deleted_ids", JSON.stringify(deletedIds));
+  }
+  if (name) {
+    const normName = String(name).toLowerCase().trim();
+    const deletedNames = getDeletedProductNames().filter(n => String(n).toLowerCase().trim() !== normName);
+    localStorage.setItem("timekairo_deleted_names", JSON.stringify(deletedNames));
+  }
+}
+
 // Backward compatibility alias
 function addDeletedProductId(id) {
   addDeletedProduct(id);
@@ -169,14 +207,14 @@ function clearDeletedProductIds() {
 
 function filterOutDeletedProducts(productsList) {
   if (!Array.isArray(productsList)) return [];
-  const deletedIds = getDeletedProductIds();
-  const deletedNames = getDeletedProductNames();
+  const deletedIds = getDeletedProductIds().map(i => String(i).trim());
+  const deletedNames = getDeletedProductNames().map(n => String(n).toLowerCase().trim());
   
   if (deletedIds.length === 0 && deletedNames.length === 0) return productsList;
 
   return productsList.filter(p => {
     if (!p) return false;
-    const pId = p.id ? String(p.id) : "";
+    const pId = p.id ? String(p.id).trim() : "";
     const pName = p.name ? String(p.name).toLowerCase().trim() : "";
 
     if (pId && deletedIds.includes(pId)) return false;
@@ -201,6 +239,14 @@ function getStoredProducts() {
     prods = DEFAULT_PRODUCTS;
   }
   const filtered = filterOutDeletedProducts(prods);
+
+  // Normalize product images array for all catalog items
+  filtered.forEach(p => {
+    if (!p.images || !Array.isArray(p.images) || p.images.length === 0) {
+      p.images = p.image ? [p.image] : ["images/tee.jpg"];
+    }
+  });
+
   localStorage.setItem("timekairo_products", JSON.stringify(filtered));
   return filtered;
 }
